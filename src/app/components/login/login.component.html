@@ -1,0 +1,55 @@
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
+  
+  <div class="card p-5 shadow-lg rounded-4 border-0" style="max-width: 450px; width: 100%;">
+    
+    <div class="text-center mb-5">
+      <div class="bg-primary rounded-circle d-inline-flex p-3 mb-3 shadow-sm text-white">
+        <i class="bi bi-prescription2" style="font-size: 2rem;"></i>
+      </div>
+      <h2 class="fw-bold text-primary mb-1">Pharmman</h2>
+      <p class="text-muted fs-6">Plataforma de Gestión</p>
+    </div>
+
+    <form>
+      
+      <div class="mb-4">
+        <label for="user" class="form-label fw-medium text-secondary">Usuario</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted">
+            <i class="bi bi-envelope"></i>
+          </span>
+          <input 
+            type="user" 
+            class="form-control border-start-0 ps-0 form-control-lg fs-6" 
+            placeholder="75083938"
+            required>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <div class="d-flex justify-content-between">
+          <label for="password" class="form-label fw-medium text-secondary">Contraseña</label>
+          <a href="#" class="text-decoration-none small text-primary">¿La olvidaste?</a>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted">
+            <i class="bi bi-lock"></i>
+          </span>
+          <input 
+            type="password" 
+            class="form-control border-start-0 ps-0 form-control-lg fs-6" 
+            id="password" 
+            name="password"
+            placeholder="********"
+            required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm d-flex justify-content-center align-items-center gap-2">
+        <span>Ingresar</span>
+        <i class="bi bi-arrow-right-circle"></i>
+      </button>
+    </form>
+
+  </div>
+</div>
