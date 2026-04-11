@@ -10,46 +10,58 @@
       <p class="text-muted fs-6">Plataforma de Gestión</p>
     </div>
 
-    <form>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       
       <div class="mb-4">
-        <label for="user" class="form-label fw-medium text-secondary">Usuario</label>
+        <label class="form-label fw-medium text-secondary">Email</label>
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0 text-muted">
             <i class="bi bi-envelope"></i>
           </span>
           <input 
-            type="user" 
+            type="email"
+            formControlName="email"
             class="form-control border-start-0 ps-0 form-control-lg fs-6" 
-            placeholder="75083938"
-            required>
+            placeholder="correo@pharmman.com">
         </div>
+        <small class="text-danger"
+          *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          Ingresa un email válido
+        </small>
       </div>
 
       <div class="mb-5">
         <div class="d-flex justify-content-between">
-          <label for="password" class="form-label fw-medium text-secondary">Contraseña</label>
-          <a href="#" class="text-decoration-none small text-primary">¿La olvidaste?</a>
+          <label class="form-label fw-medium text-secondary">Contraseña</label>
         </div>
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0 text-muted">
             <i class="bi bi-lock"></i>
           </span>
           <input 
-            type="password" 
+            type="password"
+            formControlName="password"
             class="form-control border-start-0 ps-0 form-control-lg fs-6" 
-            id="password" 
-            name="password"
-            placeholder="********"
-            required>
+            placeholder="••••••••">
         </div>
+        <small class="text-danger"
+          *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          La contraseña es requerida
+        </small>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm d-flex justify-content-center align-items-center gap-2">
+      <small class="text-danger d-block mb-3 text-center" *ngIf="errorMsg">
+        {{ errorMsg }}
+      </small>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm d-flex justify-content-center align-items-center gap-2"
+        [disabled]="form.invalid">
         <span>Ingresar</span>
         <i class="bi bi-arrow-right-circle"></i>
       </button>
-    </form>
 
+    </form>
   </div>
 </div>
