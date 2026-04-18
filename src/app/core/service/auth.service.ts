@@ -1,28 +1,39 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
   private url = environment.apiUrl;
-  private usuario: any = null;
+
+  // El "corazón" de tu sesión: guarda el usuario en memoria, no en el storage
+  private usuarioSubject = new BehaviorSubject<any>(null);
+  // Los componentes se suscribirán a este observable
+  public usuario$ = this.usuarioSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
-    // recupera datos del usuario al recargar
-    const data = sessionStorage.getItem('usuario');
-    if (data) this.usuario = JSON.parse(data);
+    // Al iniciar la app, preguntamos al backend "¿quién soy?" usando la cookie
+    this.verificarSesion().subscribe();
+  }
+
+  // Método vital: consulta el endpoint /me que creamos en Spring Boot
+  verificarSesion(): Observable<any> {
+    return this.http.get(`${this.url}/auth/me`).pipe(
+      tap(user => this.usuarioSubject.next(user)),
+      catchError(() => {
+        this.usuarioSubject.next(null);
+        return of(null);
+      })
+    );
   }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.url}/auth/login`, { email, password }).pipe(
       tap((resp: any) => {
-        // guarda datos del usuario pero NO el token
-        // el token vive en la cookie HttpOnly
-        this.usuario = resp;
-        sessionStorage.setItem('usuario', JSON.stringify(resp));
+        // Actualizamos el estado en memoria. Ya no hay sessionStorage.setItem
+        this.usuarioSubject.next(resp);
       })
     );
   }
@@ -30,26 +41,27 @@ export class AuthService {
   logout(): Observable<any> {
     return this.http.post(`${this.url}/auth/logout`, {}).pipe(
       tap(() => {
-        this.usuario = null;
-        sessionStorage.removeItem('usuario');
+        // Limpiamos la memoria y redirigimos
+        this.usuarioSubject.next(null);
         this.router.navigate(['/login']);
       })
     );
   }
 
+  // Métodos de utilidad usando el valor actual del Subject
   getUsuario(): any {
-    return this.usuario;
+    return this.usuarioSubject.value;
   }
 
   getRol(): string | null {
-    return this.usuario?.rol ?? null;
+    return this.usuarioSubject.value?.rol ?? null;
   }
 
   tienePermiso(permiso: string): boolean {
-    return this.usuario?.permisos?.includes(permiso) ?? false;
+    return this.usuarioSubject.value?.permisos?.includes(permiso) ?? false;
   }
 
   isLoggedIn(): boolean {
-    return !!this.usuario;
+    return !!this.usuarioSubject.value;
   }
 }
