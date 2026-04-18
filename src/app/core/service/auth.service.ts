@@ -1,46 +1,55 @@
 import { Injectable } from '@angular/core';
-import { Usuario } from '../model/usuario';
-import { USUARIOS_MOCK } from '../data/usuario.data';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../enviroments/enviroment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
- private usuarioActual: Usuario | null = null;
 
-  constructor(private router: Router) {
+  private url = environment.apiUrl;
+  private usuario: any = null;
+
+  constructor(private http: HttpClient, private router: Router) {
+    // recupera datos del usuario al recargar
     const data = sessionStorage.getItem('usuario');
-    if (data) this.usuarioActual = JSON.parse(data);
+    if (data) this.usuario = JSON.parse(data);
   }
 
-  login(email: string, password: string): boolean {
-    const encontrado = USUARIOS_MOCK.find(
-      u => u.email === email && u.passwordHash === password && u.estado
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.url}/auth/login`, { email, password }).pipe(
+      tap((resp: any) => {
+        // guarda datos del usuario pero NO el token
+        // el token vive en la cookie HttpOnly
+        this.usuario = resp;
+        sessionStorage.setItem('usuario', JSON.stringify(resp));
+      })
     );
-    if (encontrado) {
-      this.usuarioActual = encontrado;
-      sessionStorage.setItem('usuario', JSON.stringify(encontrado));
-      return true;
-    }
-    return false;
   }
 
-  logout(): void {
-    this.usuarioActual = null;
-    sessionStorage.removeItem('usuario');
-    this.router.navigate(['/login']);
+  logout(): Observable<any> {
+    return this.http.post(`${this.url}/auth/logout`, {}).pipe(
+      tap(() => {
+        this.usuario = null;
+        sessionStorage.removeItem('usuario');
+        this.router.navigate(['/login']);
+      })
+    );
   }
 
-  getUsuario(): Usuario | null {
-    return this.usuarioActual;
+  getUsuario(): any {
+    return this.usuario;
   }
 
   getRol(): string | null {
-    return this.usuarioActual?.rol ?? null;
+    return this.usuario?.rol ?? null;
+  }
+
+  tienePermiso(permiso: string): boolean {
+    return this.usuario?.permisos?.includes(permiso) ?? false;
   }
 
   isLoggedIn(): boolean {
-    return !!this.usuarioActual;
+    return !!this.usuario;
   }
 }

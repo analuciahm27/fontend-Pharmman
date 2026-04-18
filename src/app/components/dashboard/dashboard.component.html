@@ -1,5 +1,112 @@
-<div class="container mt-5">
-  <h2>Bienvenido a PharmMan</h2>
-  <p>Estás logueado correctamente ✅</p>
-  <button (click)="logout()">Cerrar sesión</button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold fs-3" href="#">
+      Pharm<span class="text-warning">Man</span>
+    </a>
+    
+    <div class="d-flex align-items-center gap-3">
+      <div class="badge bg-light text-dark rounded-pill px-3 py-2 d-flex align-items-center shadow-sm">
+        <span class="bg-success rounded-circle me-2" style="width: 10px; height: 10px;"></span>
+        <span class="fw-medium">{{ usuario?.nombre }}</span>
+        <span class="mx-1">|</span>
+        <small class="text-muted text-uppercase">{{ usuario?.rol }}</small>
+      </div>
+      <button class="btn btn-outline-light btn-sm fw-bold px-3 rounded-pill" (click)="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container main-content">
+  <div class="mb-4">
+    <h1 class="display-6 fw-bold text-dark">Buenos días, {{ usuario?.nombre }}</h1>
+    <p class="text-muted lead">Panel de administración general</p>
+  </div>
+
+  <div class="row g-3 mb-5">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm h-100 bg-gradient-blue text-white p-3">
+        <small class="opacity-75">Ventas hoy</small>
+        <h3 class="fw-bold mb-0">S/ 0.00</h3>
+        <small class="x-small mt-2">Datos en tiempo real</small>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm h-100 bg-gradient-green text-white p-3">
+        <small class="opacity-75">Transacciones</small>
+        <h3 class="fw-bold mb-0">0</h3>
+        <small class="x-small mt-2">Registros del día</small>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm h-100 bg-gradient-amber text-white p-3">
+        <small class="opacity-75">Stock bajo</small>
+        <h3 class="fw-bold mb-0">0</h3>
+        <small class="x-small mt-2 text-dark">Productos por reponer</small>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm h-100 bg-gradient-purple text-white p-3">
+        <small class="opacity-75">Usuarios activos</small>
+        <h3 class="fw-bold mb-0">0</h3>
+        <small class="x-small mt-2 text-white-50">En línea ahora</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-5">
+    <h5 class="fw-bold text-secondary mb-4">Módulos del Sistema</h5>
+    <div class="row g-4 text-center">
+      
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/usuarios')">
+          <div class="fs-1 mb-2">👥</div>
+          <h6 class="fw-bold mb-1">Usuarios</h6>
+          <p class="small text-muted mb-0">Personal</p>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/productos')">
+          <div class="fs-1 mb-2">💊</div>
+          <h6 class="fw-bold mb-1">Productos</h6>
+          <p class="small text-muted mb-0">Inventario</p>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/ventas')">
+          <div class="fs-1 mb-2">🛒</div>
+          <h6 class="fw-bold mb-1">Ventas</h6>
+          <p class="small text-muted mb-0">Historial</p>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/ingresos')">
+          <div class="fs-1 mb-2">📦</div>
+          <h6 class="fw-bold mb-1">Ingresos</h6>
+          <p class="small text-muted mb-0">Compras</p>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/sesiones')">
+          <div class="fs-1 mb-2">🕐</div>
+          <h6 class="fw-bold mb-1">Sesiones</h6>
+          <p class="small text-muted mb-0">Asistencia</p>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="module-item p-3 rounded-4" (click)="irA('/roles')">
+          <div class="fs-1 mb-2">🛡️</div>
+          <h6 class="fw-bold mb-1">Roles</h6>
+          <p class="small text-muted mb-0">Permisos</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

@@ -1,0 +1,30 @@
+/* Degradados para las tarjetas de stats */
+.bg-gradient-blue { background: linear-gradient(135deg, #0d6efd, #004bb5); }
+.bg-gradient-green { background: linear-gradient(135deg, #198754, #12633d); }
+.bg-gradient-amber { background: linear-gradient(135deg, #ffc107, #cc9a06); }
+.bg-gradient-purple { background: linear-gradient(135deg, #6f42c1, #4e2e8a); }
+
+.x-small { font-size: 0.75rem; }
+
+/* Efecto para los botones de módulos */
+.module-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  background-color: #f8f9fa;
+}
+
+.module-item:hover {
+  background-color: #ffffff;
+  border-color: #0d6efd;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transform: translateY(-5px);
+}
+
+.module-item h6 {
+  color: #333;
+}
+
+.module-item:hover h6 {
+  color: #0d6efd;
+}

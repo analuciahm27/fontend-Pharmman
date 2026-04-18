@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../core/service/auth.service';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-dashboard-vendedor',
   standalone: true,
-  imports: [],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  imports: [CommonModule],
+  templateUrl: './dashboard-vendedor.component.html',
+  styleUrls: ['./dashboard-vendedor.component.css']
 })
-export class DashboardComponent {
+export class DashboardVendedorComponent {
 
   usuario = this.auth.getUsuario();
 

@@ -1,0 +1,53 @@
+<div class="topbar">
+  <div class="logo">PharmMan</div>
+  <div class="user-info">
+    <div class="avatar">{{ usuario?.nombre?.charAt(0) }}</div>
+    <div>
+      <div class="user-name">{{ usuario?.nombre }} {{ usuario?.apellidoPaterno }}</div>
+      <div class="user-role">Vendedor</div>
+    </div>
+    <button class="logout-btn" (click)="logout()">Salir</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="welcome">
+    <h1>¡Hola, {{ usuario?.nombre }}! 👋</h1>
+    <p>Listo para atender</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Mis ventas hoy</div>
+      <div class="stat-val">0</div>
+      <div class="stat-sub">transacciones</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total recaudado</div>
+      <div class="stat-val">S/ 0</div>
+      <div class="stat-sub">del turno</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Última venta</div>
+      <div class="stat-val">--</div>
+      <div class="stat-sub">sin ventas aún</div>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <div class="accion-card primary" (click)="irA('/ventas/registro')">
+      <div class="accion-icon">🛒</div>
+      <div>
+        <div class="accion-title">Nueva venta</div>
+        <div class="accion-desc">Registrar productos y cobrar</div>
+      </div>
+    </div>
+    <div class="accion-card" (click)="irA('/productos')">
+      <div class="accion-icon">💊</div>
+      <div>
+        <div class="accion-title">Ver productos</div>
+        <div class="accion-desc">Consultar stock disponible</div>
+      </div>
+    </div>
+  </div>
+</div>

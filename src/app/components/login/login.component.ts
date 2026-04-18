@@ -30,17 +30,21 @@ export class LoginComponent {
     });
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) return;
-    const { email, password } = this.form.value;
-    const ok = this.auth.login(email, password);
-    if (ok) {
-      this.auth.getRol() === 'ADMIN'
+ onSubmit(): void {
+  if (this.form.invalid) return;
+
+  const { email, password } = this.form.value;
+
+  this.auth.login(email, password).subscribe({
+    next: (resp) => {
+      // redirige según rol
+      resp.rol === 'ADMIN'
         ? this.router.navigate(['/dashboard'])
         : this.router.navigate(['/ventas/registro']);
-    } else {
+    },
+    error: () => {
       this.errorMsg = 'Credenciales incorrectas o usuario inactivo.';
     }
-  }
-
+  });
+}
 }
