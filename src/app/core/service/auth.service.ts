@@ -8,13 +8,10 @@ import { environment } from '../../../enviroments/enviroment';
 export class AuthService {
   private url = environment.apiUrl;
 
-  // El "corazón" de tu sesión: guarda el usuario en memoria, no en el storage
   private usuarioSubject = new BehaviorSubject<any>(null);
-  // Los componentes se suscribirán a este observable
   public usuario$ = this.usuarioSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
-    // Al iniciar la app, preguntamos al backend "¿quién soy?" usando la cookie
     this.verificarSesion().subscribe();
   }
 

@@ -1,0 +1,127 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-secondary rounded-circle p-2 lh-1" (click)="irA('/dashboard')" title="Volver al inicio">
+        ⬅️
+      </button>
+      <div>
+        <h2 class="fw-bold mb-1">Control de Accesos</h2>
+        <p class="text-secondary mb-0">Administra las cuentas del personal y sus niveles de permiso.</p>
+      </div>
+    </div>
+    <button class="btn btn-primary rounded-pill px-4">
+      + Nuevo Usuario
+    </button>
+  </div>
+
+  <ul class="nav nav-tabs border-0 mb-4 gap-2" id="adminTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active rounded-pill border-0 px-4 py-2" data-bs-toggle="tab" data-bs-target="#usuarios-tab">
+        👥 Lista de Usuarios
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill border-0 px-4 py-2" data-bs-toggle="tab" data-bs-target="#roles-tab">
+        🛡️ Roles y Permisos
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="usuarios-tab">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4">Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th class="text-end pe-4">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+                @for (user of listaUsuarios; track user.id) {
+                <tr>
+                    <td class="ps-4">
+                    <div class="fw-bold">{{ user.nombre }} {{ user.apellidoPaterno }}</div>
+                    </td>
+
+                    <td>{{ user.email }}</td>
+
+                    <td>
+                    <span class="badge bg-blue-soft text-primary px-3">
+                        {{ user.rol || 'SIN ROL' }}
+                    </span>
+                    </td>
+
+                    <td>
+                    <div class="form-check form-switch">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        role="switch" 
+                        [checked]="user.estado === true" 
+                        (change)="toggleEstado(user)"
+                        [ngClass]="{'bg-success border-success': user.activo === true}"
+                    >
+                    </div>
+                    </td>
+
+                    <td class="text-end pe-4">
+                    <button 
+                        class="btn btn-sm btn-outline-secondary me-2" 
+                         
+                        title="Editar datos">
+                        ✏️
+                    </button>
+                    <button 
+                        class="btn btn-sm btn-outline-warning" 
+                        title="Restablecer contraseña">
+                        🔑
+                    </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                    No hay usuarios registrados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="roles-tab">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0 text-primary">ADMIN</h5>
+              <button class="btn btn-link btn-sm text-decoration-none p-0">Editar Rol</button>
+            </div>
+            <p class="small text-secondary mb-3">Permisos activos:</p>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">LECTURA</span>
+              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">ESCRITURA</span>
+              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">ELIMINAR</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100 border-dashed d-flex align-items-center justify-content-center" role="button">
+            <div class="text-center text-secondary">
+              <div class="fs-2 mb-2">+</div>
+              <p class="mb-0">Crear nuevo rol</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

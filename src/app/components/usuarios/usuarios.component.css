@@ -1,0 +1,39 @@
+/* Estilo para las pestañas activas */
+.nav-tabs .nav-link {
+    color: #64748b;
+    background-color: #f1f5f9;
+    transition: 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+}
+
+/* Badge personalizado para roles */
+.bg-blue-soft {
+    background-color: #eff6ff;
+}
+
+/* Efecto para la tabla */
+.table thead th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-weight: 700;
+    color: #475569;
+    padding: 1.25rem 1rem;
+}
+
+/* Card para crear nuevo rol (con bordes punteados) */
+.border-dashed {
+    border: 2px dashed #cbd5e1 !important;
+    background-color: transparent;
+    transition: 0.3s;
+}
+
+.border-dashed:hover {
+    border-color: #3b82f6 !important;
+    background-color: #f8fafc;
+}

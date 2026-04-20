@@ -1,30 +1,136 @@
-/* Degradados para las tarjetas de stats */
-.bg-gradient-blue { background: linear-gradient(135deg, #0d6efd, #004bb5); }
-.bg-gradient-green { background: linear-gradient(135deg, #198754, #12633d); }
-.bg-gradient-amber { background: linear-gradient(135deg, #ffc107, #cc9a06); }
-.bg-gradient-purple { background: linear-gradient(135deg, #6f42c1, #4e2e8a); }
+:root {
+  --green: #4D937F;
+  --blue: #374E62;
+  --soft: #F0F9F9;
+  --gray: #8E8F8F;
+  --white: #FFFFFF;
+}
 
-.x-small { font-size: 0.75rem; }
+body {
+  background: var(--soft);
+}
 
-/* Efecto para los botones de módulos */
-.module-item {
+.app-layout {
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  background: var(--blue);
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.brand-subtitle {
+  color: rgba(255,255,255,0.75);
+}
+
+.user-box {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.side-link {
+  color: rgba(255,255,255,0.85);
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-  background-color: #f8f9fa;
+  transition: 0.2s ease;
+}
+
+.side-link:hover,
+.side-link.active {
+  background: rgba(77, 147, 127, 0.18);
+  color: white;
+}
+
+.btn-logout {
+  background: var(--green);
+  color: white;
+  border: none;
+}
+
+.btn-logout:hover {
+  background: #3f7e6b;
+  color: white;
+}
+
+.content-area {
+  min-width: 0;
+}
+
+.topbar {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e7eeee;
+}
+
+.user-badge {
+  background: var(--green);
+  color: white;
+}
+
+.hero-card,
+.modules-card {
+  background: var(--white);
+}
+
+.hero-card {
+  border-left: 6px solid var(--green) !important;
+}
+
+.section-badge {
+  background: var(--soft);
+  color: var(--blue);
+  border: 1px solid #d9e6e6;
+}
+
+.module-item {
+  background: #f9fcfc;
+  cursor: pointer;
+  transition: 0.2s ease;
+  border: 1px solid #e5efef;
 }
 
 .module-item:hover {
-  background-color: #ffffff;
-  border-color: #0d6efd;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  border-color: var(--green);
+  box-shadow: 0 10px 24px rgba(55, 78, 98, 0.12);
 }
 
-.module-item h6 {
-  color: #333;
+.module-icon {
+  font-size: 2.2rem;
 }
 
-.module-item:hover h6 {
-  color: #0d6efd;
+@media (max-width: 991px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
 }
