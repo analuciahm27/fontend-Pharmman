@@ -22,4 +22,8 @@ export class UsuarioService {
   crear(usuario: any): Observable<any> {
     return this.http.post(this.URL, usuario);
   }
+
+  editar(id: number, data: any): Observable<any> {
+  return this.http.put(`${this.URL}/${id}`, data, { withCredentials: true });
+}
 }
