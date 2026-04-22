@@ -84,39 +84,57 @@
 
     <!-- TAB ROLES -->
     <div class="tab-pane fade" id="roles-tab">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary rounded-pill px-4" (click)="abrirModalCrearRol()">
+          + Nuevo Rol
+        </button>
+      </div>
       <div class="row g-4">
+        @for (rol of listaRoles; track rol.id) {
         <div class="col-md-4">
-          <div class="card border-0 shadow-sm rounded-4 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="fw-bold mb-0 text-primary">ADMIN</h5>
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h5 class="fw-bold mb-1">{{ rol.nombre }}</h5>
+                <small class="text-muted">{{ rol.descripcion }}</small>
+              </div>
+              <span class="badge rounded-pill px-3 py-2"
+                [class.bg-success]="rol.estado"
+                [class.bg-secondary]="!rol.estado">
+                {{ rol.estado ? 'Activo' : 'Inactivo' }}
+              </span>
             </div>
-            <p class="small text-secondary mb-3">Permisos activos:</p>
-            <div class="d-flex flex-wrap gap-2">
-              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">LECTURA</span>
-              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">ESCRITURA</span>
+            <div class="d-flex gap-2 mt-3 pt-3 border-top">
+              <button class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1"
+                (click)="abrirPermisos(rol)">
+                🛡️ Permisos
+              </button>
             </div>
           </div>
         </div>
+        } @empty {
+        <div class="col-12 text-center py-4 text-muted">
+          No hay roles registrados.
+        </div>
+        }
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- MODAL CREAR / EDITAR -->
-@if (mostrarModal) {
-<div class="modal-backdrop-custom" (click)="cerrarModal()"></div>
+<!-- MODAL CREAR / EDITAR USUARIO -->
+@if (mostrarModalUsuario) {
+<div class="modal-backdrop-custom" (click)="cerrarModalUsuario()"></div>
 <div class="modal-custom">
   <div class="card border-0 shadow-lg rounded-4 p-4" style="width:480px; max-width:95vw;">
-
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0">
         {{ modoEdicion ? 'Editar usuario' : 'Nuevo usuario' }}
       </h5>
       <button class="btn btn-sm btn-outline-secondary rounded-circle"
-        (click)="cerrarModal()">✕</button>
+        (click)="cerrarModalUsuario()">✕</button>
     </div>
-
     <div class="row g-3">
       <div class="col-6">
         <label class="form-label fw-medium">Nombre</label>
@@ -149,22 +167,105 @@
         <label class="form-label fw-medium">Rol</label>
         <select class="form-select rounded-3" [(ngModel)]="form.rolId">
           <option [ngValue]="null" disabled>Selecciona un rol</option>
-          @for (rol of roles; track rol.id) {
+          @for (rol of listaRoles; track rol.id) {
           <option [ngValue]="rol.id">{{ rol.nombre }}</option>
           }
         </select>
       </div>
     </div>
-
     <div class="d-flex gap-2 justify-content-end mt-4">
       <button class="btn btn-outline-secondary rounded-pill px-4"
-        (click)="cerrarModal()">Cancelar</button>
+        (click)="cerrarModalUsuario()">Cancelar</button>
       <button class="btn btn-primary rounded-pill px-4"
         (click)="guardar()">
         {{ modoEdicion ? 'Guardar cambios' : 'Crear usuario' }}
       </button>
     </div>
+  </div>
+</div>
+}
 
+<!-- MODAL CREAR ROL -->
+@if (mostrarModalRol) {
+<div class="modal-backdrop-custom" (click)="cerrarModalRol()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:420px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0">Nuevo rol</h5>
+      <button class="btn btn-sm btn-outline-secondary rounded-circle"
+        (click)="cerrarModalRol()">✕</button>
+    </div>
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label fw-medium">Nombre del rol</label>
+        <input type="text" class="form-control rounded-3"
+          [(ngModel)]="formRol.nombre" placeholder="Ej: SUPERVISOR">
+      </div>
+      <div class="col-12">
+        <label class="form-label fw-medium">Descripción</label>
+        <input type="text" class="form-control rounded-3"
+          [(ngModel)]="formRol.descripcion" placeholder="Descripción del rol">
+      </div>
+    </div>
+    <div class="d-flex gap-2 justify-content-end mt-4">
+      <button class="btn btn-outline-secondary rounded-pill px-4"
+        (click)="cerrarModalRol()">Cancelar</button>
+      <button class="btn btn-primary rounded-pill px-4"
+        (click)="guardarRol()">Crear rol</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- MODAL PERMISOS -->
+@if (mostrarModalPermisos) {
+<div class="modal-backdrop-custom" (click)="cerrarModalPermisos()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:520px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5 class="fw-bold mb-1">Permisos — {{ rolSeleccionado?.nombre }}</h5>
+        <small class="text-muted">Los cambios se guardan automáticamente</small>
+      </div>
+      <button class="btn btn-sm btn-outline-secondary rounded-circle"
+        (click)="cerrarModalPermisos()">✕</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>Módulo</th>
+            <th class="text-center">Lectura</th>
+            <th class="text-center">Escritura</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (permiso of permisosRol; track permiso.moduloId) {
+          <tr>
+            <td class="fw-medium">{{ permiso.modulo }}</td>
+            <td class="text-center">
+              <div class="form-check form-switch d-flex justify-content-center">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="permiso.lectura"
+                  (change)="guardarPermiso(permiso)">
+              </div>
+            </td>
+            <td class="text-center">
+              <div class="form-check form-switch d-flex justify-content-center">
+                <input class="form-check-input" type="checkbox"
+                  [(ngModel)]="permiso.escritura"
+                  (change)="guardarPermiso(permiso)">
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end mt-4">
+      <button class="btn btn-primary rounded-pill px-4"
+        (click)="cerrarModalPermisos()">Listo</button>
+    </div>
   </div>
 </div>
 }
