@@ -3,7 +3,7 @@
   --blue: #374E62;
   --soft: #F0F9F9;
   --gray: #8E8F8F;
-  --white: #FFFFFF;
+  --black: #140d0d;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 .sidebar {
   width: 280px;
   background: var(--blue);
-  color: var(--white);
+  color: var(--black);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -32,13 +32,13 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: white;
+  color: black;
 }
 
 .brand-title {
   font-weight: 700;
   font-size: 1.1rem;
-  color: white;
+  color: black;
 }
 
 .brand-subtitle {
@@ -47,7 +47,7 @@ body {
 
 .user-box {
   background: rgba(255,255,255,0.08);
-  color: white;
+  color: black;
   border: 1px solid rgba(255,255,255,0.12);
 }
 
@@ -62,18 +62,18 @@ body {
 .side-link:hover,
 .side-link.active {
   background: rgba(77, 147, 127, 0.18);
-  color: white;
+  color: black;
 }
 
 .btn-logout {
   background: var(--green);
-  color: white;
+  color: black;
   border: none;
 }
 
 .btn-logout:hover {
   background: #3f7e6b;
-  color: white;
+  color: black;
 }
 
 .content-area {
@@ -88,12 +88,12 @@ body {
 
 .user-badge {
   background: var(--green);
-  color: white;
+  color: black;
 }
 
 .hero-card,
 .modules-card {
-  background: var(--white);
+  background: var(--black);
 }
 
 .hero-card {
