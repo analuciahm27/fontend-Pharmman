@@ -1,0 +1,98 @@
+<div class="container-fluid p-4">
+  <button (click)="regresar()" class="btn-back mb-4">
+    <i class="bi bi-arrow-left"></i> Regresar
+  </button>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <h5 class="fw-bold text-charcoal mb-4">Registrar Nueva Venta</h5>
+        
+        <div class="position-relative">
+          <label class="small fw-bold text-muted mb-2">BUSCAR PRODUCTO</label>
+          <div class="input-group-mist">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control-mist" 
+                   [(ngModel)]="busqueda" (input)="buscarProducto()"
+                   placeholder="Escriba el nombre del medicamento...">
+          </div>
+
+          <ul class="list-group position-absolute w-100 shadow-sm z-3" *ngIf="productosFiltrados.length > 0">
+            <li class="list-group-item list-group-item-action d-flex justify-content-between" 
+                *ngFor="let p of productosFiltrados" (click)="agregarAlCarrito(p)">
+              <span>{{ p.nombre }}</span>
+              <span class="fw-bold text-jungle">S/ {{ p.precio }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <table class="table align-middle mb-0">
+          <thead class="bg-azure-light">
+            <tr>
+              <th class="ps-4">Producto</th>
+              <th>Precio</th>
+              <th width="120">Cant.</th>
+              <th>Subtotal</th>
+              <th class="text-end pe-4"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of carrito; let i = index">
+              <td class="ps-4 fw-bold text-charcoal">{{ item.nombre }}</td>
+              <td>S/ {{ item.precio }}</td>
+              <td>
+                <input type="number" class="form-control form-control-sm border-0 bg-light" 
+                       [(ngModel)]="item.cantidad" (change)="calcularTotal()">
+              </td>
+              <td class="fw-bold text-jungle">S/ {{ item.precio * item.cantidad }}</td>
+              <td class="text-end pe-4">
+                <button class="btn btn-sm text-danger" (click)="eliminarItem(i)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="carrito.length === 0">
+              <td colspan="5" class="text-center py-5 text-muted">
+                <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
+                El carrito está vacío
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-lg rounded-4 p-4 bg-charcoal text-white h-100">
+        <h5 class="fw-bold mb-4">Resumen de Venta</h5>
+        
+        <div class="mb-4">
+          <label class="small opacity-75 d-block mb-2">MÉTODO DE PAGO</label>
+          <select class="form-select bg-white bg-opacity-10 border-0 text-white" [(ngModel)]="metodoPago">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+          </select>
+        </div>
+
+        <div class="mt-auto">
+          <div class="d-flex justify-content-between mb-2 opacity-75">
+            <span>Subtotal:</span>
+            <span>S/ {{ (totalVenta / 1.18).toFixed(2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-4">
+            <span class="fs-4 fw-bold">TOTAL:</span>
+            <span class="fs-4 fw-bold text-jungle">S/ {{ totalVenta.toFixed(2) }}</span>
+          </div>
+          
+          <button class="btn btn-jungle w-100 py-3 rounded-pill fw-bold shadow" 
+                  [disabled]="carrito.length === 0" (click)="finalizarVenta()">
+            CONFIRMAR VENTA
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

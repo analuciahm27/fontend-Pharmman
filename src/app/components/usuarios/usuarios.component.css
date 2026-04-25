@@ -1,55 +1,147 @@
-/* Estilo para las pestañas activas */
-.nav-tabs .nav-link {
-    color: #64748b;
-    background-color: #f1f5f9;
-    transition: 0.3s;
-}
+/* Colores y Variables */
+.text-charcoal { color: #374e62; }
+.text-jungle { color: #4d937f; }
+.btn-jungle { background-color: #4d937f; color: white; border: none; }
+.bg-mist { background-color: #f0f9f9; }
+.bg-azure-light { background-color: #f8fafb; }
 
-.nav-tabs .nav-link.active {
-    background-color: #3b82f6 !important;
-    color: white !important;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
-}
-
-/* Badge personalizado para roles */
-.bg-blue-soft {
-    background-color: #eff6ff;
-}
-
-/* Efecto para la tabla */
-.table thead th {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-    font-weight: 700;
-    color: #475569;
-    padding: 1.25rem 1rem;
-}
-
-/* Card para crear nuevo rol (con bordes punteados) */
-.border-dashed {
-    border: 2px dashed #cbd5e1 !important;
-    background-color: transparent;
-    transition: 0.3s;
-}
-
-.border-dashed:hover {
-    border-color: #3b82f6 !important;
-    background-color: #f8fafc;
-}
-.modal-backdrop-custom {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 1000;
-}
-
-.modal-custom {
-  position: fixed;
-  inset: 0;
+/* Botón Regresar */
+.btn-back {
+  border: none;
+  background: white;
+  color: #4d937f;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
-  padding: 16px;
+  transition: 0.3s;
 }
+.btn-back:hover { background: #4d937f; color: white; transform: scale(1.1); }
+
+/* Tabs */
+.nav-pills .nav-link { color: #8e8f8f; font-weight: 600; transition: 0.3s; }
+.nav-pills .nav-link.active { background-color: #4d937f !important; box-shadow: 0 4px 10px rgba(77, 147, 127, 0.3); }
+
+/* Badges */
+.badge-rol {
+  background: #f0f9f9;
+  color: #4d937f;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid rgba(77, 147, 127, 0.1);
+}
+
+.badge-rol-dark {
+  background: #374e62;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Switches */
+.custom-switch { cursor: pointer; width: 3em ; height: 1.5em ; }
+.custom-switch:checked { background-color: #4d937f; border-color: #4d937f; }
+
+/* Botones de Acción */
+.btn-action-teal {
+  background: #f0f9f9;
+  color: #4d937f;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+.btn-action-teal:hover { background: #4d937f; color: white; }
+
+.btn-permisos {
+  background: #f8fafb;
+  color: #374e62;
+  border: 1px solid #e2e8f0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+.btn-permisos:hover { background: #374e62; color: white; }
+
+/* Cards de Roles */
+.card-role {
+  transition: 0.3s;
+  border-bottom: 4px solid #4d937f !important;
+}
+.card-role:hover { transform: translateY(-8px); }
+.border-top-mist { border-top: 1px solid #f0f9f9; }
+
+/* Color para los switches de permisos */
+
+/* Estilo de la tabla de permisos */
+.bg-azure-light {
+  background-color: #f8fafb;
+}
+
+.border-bottom-mist {
+  border-bottom: 1px solid #f0f9f9;
+}
+
+/* 2. Contenedor del Modal centrado */
+.modal-custom {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centrado perfecto */
+  z-index: 1050;
+  width: 100%;
+  max-width: 500px; /* Ajuste para el formulario de usuario */
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-custom .form-control, 
+.modal-custom .form-select {
+  background-color: var(--bg-mist) !important; /* Usando tu variable f0f9f9 */
+  border: 1px solid #e0eeee !important;
+  border-radius: 12px !important;
+  padding: 10px 15px !important;
+  color: #374e62 !important;
+}
+
+/* 1. Fondo oscuro con desenfoque (Backdrop) */
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(55, 78, 98, 0.4); /* Charcoal blue con transparencia */
+  backdrop-filter: blur(6px); /* Efecto de desenfoque premium */
+  z-index: 1040;
+  animation: fadeIn 0.3s ease;
+}
+
+/* 4. Animaciones para suavidad */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* 5. Ajuste para el Modal de Permisos (que es más ancho) */
+.modal-permisos-width {
+  max-width: 600px !important;
+}
+
+/* 6. Asegurar que el modal tenga el estilo de card de PharMan */
+.modal-custom .card {
+  border: none !important;
+  box-shadow: 0 15px 35px rgba(55, 78, 98, 0.2) !important;
+}
+

@@ -1,0 +1,110 @@
+/* Variables locales para no depender solo del global */
+.text-charcoal { color: #374e62; }
+.bg-jungle { background-color: #4d937f; }
+
+.btn-back {
+  border: none;
+  background: transparent;
+  color: #8e8f8f;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+.btn-back:hover { color: #4d937f; transform: translateX(-5px); }
+
+.btn-jungle {
+  background-color: #4d937f;
+  color: white;
+  font-weight: 600;
+  padding: 10px 25px;
+}
+
+/* Inputs Mist Style */
+.form-control-mist, .form-select-mist {
+  background-color: #f0f9f9;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 15px;
+  color: #374e62;
+}
+
+.input-group-pharman {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-group-pharman i {
+  position: absolute;
+  left: 15px;
+  color: #8e8f8f;
+}
+.input-group-pharman input { padding-left: 45px; width: 100%; }
+
+/* Estilos de Tabla */
+.bg-light-blue { background-color: #f8fafb; }
+.border-bottom-mist { border-bottom: 1px solid #f0f9f9; }
+
+.badge-category {
+  background-color: #f0f9f9;
+  color: #4d937f;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.stock-low { color: #dc3545; font-weight: 800; background: #fff1f2; padding: 4px 8px; border-radius: 8px; }
+.stock-ok { color: #374e62; }
+
+.status-indicator { font-weight: 600; font-size: 0.85rem; }
+.status-indicator.active { color: #4d937f; }
+.status-indicator.inactive { color: #8e8f8f; }
+
+.btn-action {
+  border: none;
+  background: #f8fafb;
+  border-radius: 8px;
+  width: 35px;
+  height: 35px;
+  transition: 0.2s;
+}
+.btn-action:hover { background: #e2e8f0; }
+
+.form-control, .form-select {
+  background-color: #f0f9f9 !important; /* Azure Mist */
+  border: 1px solid #e0eeee !important;
+  border-radius: 12px !important;
+  color: #374e62 !important;
+}
+
+.text-charcoal { color: #374e62; }
+.btn-jungle { background-color: #4d937f; color: white; border: none; }
+
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(55, 78, 98, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 1040;
+}
+
+.modal-custom {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* CENTRADO ABSOLUTO */
+  z-index: 1050;
+  width: 100%;
+}
+
+/* Estilo Azure Mist para los inputs del producto */
+.form-control, .form-select {
+  background-color: #f0f9f9 !important;
+  border-radius: 12px !important;
+  border: 1px solid #e0eeee !important;
+}

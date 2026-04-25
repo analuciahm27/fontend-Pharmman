@@ -1,136 +1,91 @@
-:root {
-  --green: #4D937F;
-  --blue: #374E62;
-  --soft: #F0F9F9;
-  --gray: #8E8F8F;
-  --black: #140d0d;
-}
-
-body {
-  background: var(--soft);
-}
-
-.app-layout {
-  min-height: 100vh;
-}
-
 .sidebar {
   width: 280px;
-  background: var(--blue);
-  color: var(--black);
+  background-color: #374e62 !important; /* Charcoal Blue de tu SQL */
+  height: 100vh;
   position: sticky;
   top: 0;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* El logo circular o cuadrado redondeado */
 .brand-logo {
+  background-color: #4d937f;
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  background: var(--green);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  color: black;
+  font-weight: 800;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .brand-title {
+  color: white;
   font-weight: 700;
   font-size: 1.1rem;
-  color: black;
+  margin-bottom: 0;
 }
 
 .brand-subtitle {
-  color: rgba(255,255,255,0.75);
+  color: #8e8f8f;
+  font-size: 0.75rem;
+  display: block;
 }
 
-.user-box {
-  background: rgba(255,255,255,0.08);
-  color: black;
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
+/* Links de navegación */
 .side-link {
-  color: rgba(255,255,255,0.85);
-  padding: 0.85rem 1rem;
-  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none;
+  padding: 0.85rem 1.2rem;
+  border-radius: 14px; /* Bordes muy redondeados como en la imagen */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
-.side-link:hover,
+/* Estado Activo y Hover */
+.side-link:hover, 
 .side-link.active {
-  background: rgba(77, 147, 127, 0.18);
-  color: black;
+  background-color: rgba(77, 147, 127, 0.15) !important; /* Jungle Teal transparente */
+  color: #4d937f !important;
+}
+
+.side-link i {
+  font-size: 1.2rem;
+}
+
+/* Caja de Usuario al fondo */
+.user-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-top: auto;
+  color: white;
 }
 
 .btn-logout {
-  background: var(--green);
-  color: black;
+  background-color: #4d937f;
+  color: white;
   border: none;
+  border-radius: 12px;
+  padding: 0.7rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: 0.3s;
 }
 
 .btn-logout:hover {
-  background: #3f7e6b;
-  color: black;
-}
-
-.content-area {
-  min-width: 0;
-}
-
-.topbar {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e7eeee;
-}
-
-.user-badge {
-  background: var(--green);
-  color: black;
-}
-
-.hero-card,
-.modules-card {
-  background: var(--black);
-}
-
-.hero-card {
-  border-left: 6px solid var(--green) !important;
-}
-
-.section-badge {
-  background: var(--soft);
-  color: var(--blue);
-  border: 1px solid #d9e6e6;
-}
-
-.module-item {
-  background: #f9fcfc;
-  cursor: pointer;
-  transition: 0.2s ease;
-  border: 1px solid #e5efef;
-}
-
-.module-item:hover {
-  transform: translateY(-4px);
-  border-color: var(--green);
-  box-shadow: 0 10px 24px rgba(55, 78, 98, 0.12);
-}
-
-.module-icon {
-  font-size: 2.2rem;
-}
-
-@media (max-width: 991px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-
-  .app-layout {
-    flex-direction: column;
-  }
+  background-color: #3f7e6b;
+  transform: translateY(-2px);
 }
