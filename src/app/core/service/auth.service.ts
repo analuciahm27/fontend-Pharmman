@@ -47,15 +47,26 @@ verificarSesion(): Observable<any> {
     );
   }
 
-  logout(): Observable<any> {
-    return this.http.post(`${this.url}/auth/logout`, {}).pipe(
-      tap(() => {
-        this.clearInactivityTimer();
-        this.usuarioSubject.next(null);
-        this.router.navigate(['/login']);
-      })
-    );
-  }
+ logout(): Observable<any> {
+  // 1. IMPORTANTE: No limpies el usuarioSubject aquí arriba.
+  // 2. Disparamos la petición al backend. 
+  //    El interceptor adjuntará la cookie porque aún no hemos limpiado nada.
+  return this.http.post(`${this.url}/auth/logout`, {}, { withCredentials: true }).pipe(
+    tap(() => {
+      // 3. SOLO cuando el servidor responda "OK", limpiamos el estado local.
+      console.log('Logout exitoso en el servidor, limpiando local...');
+      this.usuarioSubject.next(null);
+      this.router.navigate(['/login']);
+    }),
+    catchError(err => {
+      // 4. Si el servidor falla, igual limpiamos para no dejar al usuario atrapado
+      console.log('Error en logout, limpiando de todos modos...');
+      this.usuarioSubject.next(null);
+      this.router.navigate(['/login']);
+      return of(null);
+    })
+  );
+}
 
   // ==================== CONTROL DE INACTIVIDAD ====================
 
