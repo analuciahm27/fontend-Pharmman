@@ -123,3 +123,90 @@
 .bg-green  { background: #27ae60; }
 .bg-orange { background: #e67e22; }
 .bg-purple { background: #8e44ad; }
+
+/* ===== ANIMACIONES ===== */
+
+/* Fade + slide hacia arriba al entrar */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade simple */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Sidebar entra desde la izquierda */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.sidebar {
+  animation: slideInLeft 0.4s ease both;
+}
+
+.topbar {
+  animation: fadeIn 0.4s ease 0.2s both;
+}
+
+.hero-card {
+  animation: fadeSlideUp 0.5s ease 0.2s both;
+}
+
+/* Tarjetas con delay escalonado */
+.module-card {
+  animation: fadeSlideUp 0.5s ease both;
+}
+
+.row > div:nth-child(1) .module-card { animation-delay: 0.3s; }
+.row > div:nth-child(2) .module-card { animation-delay: 0.4s; }
+.row > div:nth-child(3) .module-card { animation-delay: 0.5s; }
+.row > div:nth-child(4) .module-card { animation-delay: 0.6s; }
+.row > div:nth-child(5) .module-card { animation-delay: 0.7s; }
+
+/* Hover más elegante en tarjetas */
+.module-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.module-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(77,147,127,0.18) !important;
+}
+
+/* Hover en ícono del módulo */
+.module-card:hover .module-icon-wrap {
+  transform: scale(1.12) rotate(-4deg);
+  transition: transform 0.25s ease;
+}
+
+.module-icon-wrap {
+  transition: transform 0.25s ease;
+}
+
+/* Links del sidebar con transición suave */
+.side-link {
+  transition: background 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+}
+
+.side-link:hover {
+  padding-left: 1.4rem !important;
+}
+
+/* Botón logout con pulso suave al hover */
+.btn-logout {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+}
+
+/* Avatar con brillo al hover */
+.user-box:hover .avatar-small {
+  box-shadow: 0 0 0 3px rgba(77,147,127,0.4);
+  transition: box-shadow 0.2s ease;
+}
