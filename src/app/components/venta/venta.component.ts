@@ -55,10 +55,10 @@ export class VentasComponent implements OnInit {
   agregarAlCarrito(prod: any): void {
     const existente = this.carrito.find(i => i.id === prod.id);
     if (existente) {
-      if (existente.cantidad < prod.stock) existente.cantidad++;
-      else { this.errorVenta = `Stock máximo disponible: ${prod.stock}`; return; }
+      if (existente.cantidad < existente.stock) existente.cantidad++;
+      else { this.errorVenta = `Stock máximo disponible: ${existente.stock}`; return; }
     } else {
-      if (prod.stock === 0) { this.errorVenta = 'Producto sin stock'; return; }
+      if (prod.stock === 0) { this.errorVenta = 'Producto sin stock disponible'; return; }
       this.carrito.push({ ...prod, cantidad: 1 });
     }
     this.errorVenta = '';
