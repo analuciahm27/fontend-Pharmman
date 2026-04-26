@@ -73,7 +73,8 @@
               @if (puedeEscribir) {
                 <div class="form-check form-switch d-flex justify-content-center">
                   <input class="form-check-input custom-switch" type="checkbox"
-                         [checked]="user.estado" (change)="toggleEstado(user)">
+                         [checked]="user.estado"
+                         (click)="$event.preventDefault(); toggleEstado(user)">
                 </div>
               } @else {
                 <span [class]="user.estado ? 'status-active' : 'status-inactive'">

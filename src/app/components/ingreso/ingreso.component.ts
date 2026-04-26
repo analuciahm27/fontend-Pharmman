@@ -64,10 +64,14 @@ export class IngresoComponent implements OnInit {
     this.errorMsg = '';
   }
 
-  eliminarItem(index: number): void { this.items.splice(index, 1); }
+  eliminarItem(index: number): void {
+    if (!confirm('¿Eliminar este producto del ingreso?')) return;
+    this.items.splice(index, 1);
+  }
 
   confirmarIngreso(): void {
     if (this.items.length === 0) { this.errorMsg = 'Agrega al menos un producto'; return; }
+    if (!confirm(`¿Confirmar el ingreso de ${this.items.length} producto(s) al inventario?`)) return;
 
     const request = {
       detalles: this.items.map(i => ({ productoId: i.producto.id, cantidad: i.cantidad }))
