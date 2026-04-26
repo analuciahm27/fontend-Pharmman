@@ -1,93 +1,168 @@
 <div class="container-fluid p-4">
-  <button (click)="regresar()" class="btn-back mb-4">
-    <i class="bi bi-arrow-left-short fs-4"></i>
-    <span>Regresar al Panel</span>
-  </button>
-
-  <div class="row mb-4">
-    <div class="col">
-      <h2 class="fw-bold text-charcoal">Gestión de Inventario</h2>
-      <p class="text-secondary">Control de stock y catálogo de productos</p>
-    </div>
-    <div class="col text-end align-self-center">
-        <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="abrirModalCrear()">
-            <i class="bi bi-plus-circle me-2"></i> Nuevo Producto
-        </button>
-    </div>
-  </div>
-
-  <div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body p-4">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <div class="input-group-pharman">
-            <i class="bi bi-search"></i>
-            <input type="text" class="form-control-mist" placeholder="Buscar por nombre o código de barras...">
-          </div>
-        </div>
-        <div class="col-md-3">
-          <select class="form-select-mist">
-            <option selected>Todas las categorías</option>
-          </select>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <button (click)="irA('/dashboard')" class="btn-back shadow-sm">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <div>
+        <h2 class="fw-bold text-charcoal mb-0">Gestión de Productos</h2>
+        <p class="text-secondary small mb-0">Catálogo e inventario de la farmacia</p>
       </div>
     </div>
+    @if (esAdmin) {
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-jungle rounded-pill px-3" (click)="abrirModalCategoria()">
+          <i class="bi bi-tags me-1"></i> Categorías
+        </button>
+        <button class="btn btn-jungle rounded-pill px-4 shadow" (click)="abrirModalCrear()">
+          <i class="bi bi-plus-circle me-2"></i> Nuevo Producto
+        </button>
+      </div>
+    }
   </div>
 
+  <!-- Buscador -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4 p-3">
+    <div class="input-group-pharman">
+      <i class="bi bi-search"></i>
+      <input type="text" class="form-control-mist" [(ngModel)]="busqueda"
+             (input)="buscar()" placeholder="Buscar por nombre o código...">
+    </div>
+  </div>
+
+  <!-- Tabla -->
   <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
     <div class="table-responsive">
       <table class="table align-middle mb-0">
-        <thead class="bg-light-blue text-muted small text-uppercase">
+        <thead class="bg-azure-light text-muted small text-uppercase">
           <tr>
-            <th class="px-4 py-3">Código</th>
+            <th class="ps-4 py-3">Código</th>
             <th class="py-3">Producto</th>
             <th class="py-3">Categoría</th>
             <th class="py-3">Precio</th>
             <th class="py-3 text-center">Stock</th>
-            <th class="py-3">Estado</th>
-            <th class="py-3 text-center">Acciones</th>
+            <th class="py-3 text-center">Estado</th>
+            @if (esAdmin) { <th class="py-3 text-end pe-4">Acciones</th> }
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of productos" class="border-bottom-mist">
-            <td class="px-4 font-mono text-muted small">{{ p.codigo }}</td>
+          @for (p of productos; track p.id) {
+          <tr class="border-bottom-mist">
+            <td class="ps-4 text-muted small font-mono">{{ p.codigo }}</td>
             <td>
               <div class="fw-bold text-charcoal">{{ p.nombre }}</div>
-              <small class="text-muted">{{ p.descripcion | slice:0:30 }}...</small>
+              <small class="text-muted">{{ p.descripcion }}</small>
             </td>
             <td><span class="badge-category">{{ p.categoriaNombre }}</span></td>
             <td class="fw-bold text-charcoal">S/ {{ p.precio.toFixed(2) }}</td>
             <td class="text-center">
-              <span [class]="p.stock < 10 ? 'stock-low' : 'stock-ok'">
-                {{ p.stock }}
-              </span>
-            </td>
-            <td>
-              <span class="status-indicator" [ngClass]="p.activo ? 'active' : 'inactive'">
-                {{ p.activo ? 'Habilitado' : 'Sin Stock' }}
-              </span>
+              <span [class]="p.stock < 10 ? 'stock-low' : 'stock-ok'">{{ p.stock }}</span>
             </td>
             <td class="text-center">
-              <button class="btn btn-action me-1" (click)="editarProducto(p)"><i class="bi bi-pencil-square"></i></button>
-              <button class="btn btn-action text-danger" (click)="eliminarProducto(p.id!)"><i class="bi bi-trash3"></i></button>
+              @if (esAdmin) {
+                <div class="form-check form-switch d-flex justify-content-center">
+                  <input class="form-check-input custom-switch" type="checkbox"
+                         [checked]="p.activo" (change)="toggleEstado(p)">
+                </div>
+              } @else {
+                <span [class]="p.activo ? 'status-active' : 'status-inactive'">
+                  {{ p.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              }
             </td>
+            @if (esAdmin) {
+            <td class="text-end pe-4">
+              <button class="btn btn-action-teal" (click)="abrirModalEditar(p)">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+            </td>
+            }
           </tr>
+          } @empty {
+          <tr><td colspan="7" class="text-center py-5 text-muted">No hay productos registrados.</td></tr>
+          }
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-//=========== NUEVO PRODUCTO ===========
-//
-@if (mostrarModalProducto) {
-  <div class="modal-backdrop-custom" (click)="cerrarModal()"></div>
-  <div class="modal-custom">
-    <div class="card border-0 shadow-lg rounded-4 p-4" style="width: 550px;">
-      <div class="d-flex gap-2 justify-content-end mt-4">
-        <button class="btn btn-light rounded-pill px-4" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn-jungle rounded-pill px-4" (click)="guardarProducto()">Confirmar</button>
+<!-- MODAL PRODUCTO -->
+@if (mostrarModal) {
+<div class="modal-backdrop-custom" (click)="cerrarModal()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:520px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0 text-charcoal">{{ modoEdicion ? 'Editar Producto' : 'Nuevo Producto' }}</h5>
+      <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="row g-3">
+      <div class="col-6">
+        <label class="form-label small fw-bold text-muted">CÓDIGO</label>
+        <input type="text" class="form-control" [(ngModel)]="form.codigo" placeholder="Ej: MED-001">
+      </div>
+      <div class="col-6">
+        <label class="form-label small fw-bold text-muted">CATEGORÍA</label>
+        <select class="form-select" [(ngModel)]="form.categoriaId">
+          <option [ngValue]="null" disabled>Seleccionar</option>
+          @for (cat of categorias; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nombre }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-bold text-muted">NOMBRE COMERCIAL</label>
+        <input type="text" class="form-control" [(ngModel)]="form.nombre" placeholder="Nombre del producto">
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-bold text-muted">DESCRIPCIÓN</label>
+        <input type="text" class="form-control" [(ngModel)]="form.descripcion" placeholder="Descripción breve">
+      </div>
+      <div class="col-6">
+        <label class="form-label small fw-bold text-muted">PRECIO (S/)</label>
+        <input type="number" class="form-control" [(ngModel)]="form.precio" min="0" step="0.01">
       </div>
     </div>
+    @if (errorMsg) {
+      <small class="text-danger d-block mt-2">{{ errorMsg }}</small>
+    }
+    <div class="d-flex gap-2 justify-content-end mt-4">
+      <button class="btn btn-light rounded-pill px-4" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="guardar()">
+        {{ modoEdicion ? 'Guardar cambios' : 'Crear producto' }}
+      </button>
+    </div>
   </div>
+</div>
+}
+
+<!-- MODAL CATEGORÍAS -->
+@if (mostrarModalCategoria) {
+<div class="modal-backdrop-custom" (click)="cerrarModalCategoria()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:480px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0 text-charcoal">{{ categoriaEditandoId ? 'Editar Categoría' : 'Nueva Categoría' }}</h5>
+      <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarModalCategoria()">✕</button>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-bold text-muted">NOMBRE</label>
+      <input type="text" class="form-control" [(ngModel)]="formCategoria.nombre" placeholder="Ej: Vitaminas">
+    </div>
+    <div class="mb-4">
+      <p class="small fw-bold text-muted mb-2">CATEGORÍAS EXISTENTES</p>
+      <div class="d-flex flex-wrap gap-2">
+        @for (cat of categorias; track cat.id) {
+          <span class="badge-category" role="button" (click)="abrirModalCategoria(cat)">
+            {{ cat.nombre }} <i class="bi bi-pencil ms-1"></i>
+          </span>
+        }
+      </div>
+    </div>
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-light rounded-pill px-4" (click)="cerrarModalCategoria()">Cancelar</button>
+      <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="guardarCategoria()">Guardar</button>
+    </div>
+  </div>
+</div>
 }

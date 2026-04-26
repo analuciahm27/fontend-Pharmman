@@ -6,41 +6,19 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { ProductoComponent } from './components/producto/producto.component';
 import { VentasComponent } from './components/venta/venta.component';
 import { SesionesComponent } from './components/sesion/sesion.component';
+import { IngresoComponent } from './components/ingreso/ingreso.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  
-  { 
-    path: 'dashboard', 
-    component: DashboardComponent,
-    canActivate: [authGuard]
-  },
-  
-  { 
-    path: 'usuarios', 
-    component: UsuariosComponent, 
-    canActivate: [authGuard] 
-  },
 
-  { 
-    path: 'productos', // 2. Nueva Ruta para Productos
-    component: ProductoComponent,
-    canActivate: [authGuard] 
-  },
-
-  { path: 'ventas', 
-    component: VentasComponent, 
-    canActivate: [authGuard] 
-  },
-
-    { path: 'sesiones', 
-    component: SesionesComponent, 
-    canActivate: [authGuard] 
-  },
-  /* Puedes ir agregando las demás rutas de la misma forma:
-  { path: 'ingresos', component: IngresosComponent, canActivate: [authGuard] },
-  */
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'usuarios', component: UsuariosComponent, canActivate: [authGuard] },
+  { path: 'productos', component: ProductoComponent, canActivate: [authGuard] },
+  { path: 'ventas', component: VentasComponent, canActivate: [authGuard] },
+  { path: 'ventas/registro', component: VentasComponent, canActivate: [authGuard] },
+  { path: 'ingresos', component: IngresoComponent, canActivate: [authGuard] },
+  { path: 'sesiones', component: SesionesComponent, canActivate: [authGuard] },
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' } 
+  { path: '**', redirectTo: 'login' }
 ];

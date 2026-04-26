@@ -1,4 +1,8 @@
 .text-charcoal { color: #374e62; }
+.text-jungle { color: #4d937f; }
+.btn-jungle { background-color: #4d937f; color: white; border: none; font-weight: 600; }
+.bg-charcoal { background-color: #374e62; }
+.bg-mist { background-color: #f0f9f9; }
 .bg-azure-light { background-color: #f8fafb; }
 .border-bottom-mist { border-bottom: 1px solid #f0f9f9; }
 
@@ -16,20 +20,17 @@
   padding: 12px 15px 12px 45px; color: #374e62; width: 100%;
 }
 
-.badge-rol {
-  background: #f0f9f9; color: #4d937f;
-  padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
-}
-.badge-active {
-  background: #d1fae5; color: #065f46;
-  padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
-}
-.badge-closed {
-  background: #f1f5f9; color: #64748b;
-  padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+.stock-ok { color: #374e62; font-weight: 600; }
+
+.nav-pills .nav-link { color: #8e8f8f; font-weight: 600; transition: 0.3s; }
+.nav-pills .nav-link.active { background-color: #4d937f !important; box-shadow: 0 4px 10px rgba(77,147,127,0.3); }
+
+.badge-item {
+  background: #f0f9f9; color: #374e62;
+  padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
 }
 
-.form-control {
+.form-control, .form-select {
   background-color: #f0f9f9 !important; border: 1px solid #e0eeee !important;
   border-radius: 12px !important; color: #374e62 !important;
 }

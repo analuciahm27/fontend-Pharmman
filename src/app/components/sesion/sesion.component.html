@@ -1,42 +1,74 @@
 <div class="container-fluid p-4">
-  <button (click)="regresar()" class="btn-back mb-4">
-    <i class="bi bi-arrow-left"></i> Regresar
-  </button>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <button (click)="irA('/dashboard')" class="btn-back shadow-sm">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="fw-bold text-charcoal mb-0">Historial de Sesiones</h2>
+      <p class="text-secondary small mb-0">Registro de entradas y salidas del sistema</p>
+    </div>
+  </div>
 
-  <header class="mb-4">
-    <h2 class="fw-bold text-charcoal">Registro de Sesiones</h2>
-    <p class="text-muted">Historial de inicios y cierres de sesión del sistema</p>
-  </header>
+  <!-- Filtros -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small fw-bold text-muted">BUSCAR USUARIO</label>
+        <div class="input-group-pharman">
+          <i class="bi bi-search"></i>
+          <input type="text" class="form-control-mist" [(ngModel)]="filtroUsuario"
+                 (input)="filtrar()" placeholder="Nombre o email...">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted">DESDE</label>
+        <input type="date" class="form-control" [(ngModel)]="filtroDesde" (change)="filtrar()">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted">HASTA</label>
+        <input type="date" class="form-control" [(ngModel)]="filtroHasta" (change)="filtrar()">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary rounded-pill w-100" (click)="limpiarFiltros()">
+          <i class="bi bi-x-circle me-1"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
     <div class="table-responsive">
       <table class="table align-middle mb-0">
-        <thead class="bg-azure-light">
+        <thead class="bg-azure-light text-muted small text-uppercase">
           <tr>
-            <th class="ps-4">ID SESIÓN</th>
-            <th>USUARIO</th>
-            <th>ROL</th>
-            <th>INICIO DE SESIÓN</th>
-            <th>CIERRE DE SESIÓN</th>
-            <th class="text-end pe-4">ESTADO</th>
+            <th class="ps-4 py-3">#</th>
+            <th class="py-3">Usuario</th>
+            <th class="py-3">Rol</th>
+            <th class="py-3">Entrada</th>
+            <th class="py-3">Salida</th>
+            <th class="py-3 text-end pe-4">Estado</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let s of sesiones" class="border-bottom-mist">
-            <td class="ps-4 text-muted small font-mono">SES-{{ s.id }}</td>
+          @for (s of sesionesFiltradas; track s.id) {
+          <tr class="border-bottom-mist">
+            <td class="ps-4 text-muted small">SES-{{ s.id }}</td>
             <td>
               <div class="fw-bold text-charcoal">{{ s.usuarioNombre }}</div>
               <small class="text-muted">{{ s.usuarioEmail }}</small>
             </td>
             <td><span class="badge-rol">{{ s.rolNombre }}</span></td>
-            <td>{{ s.entrada | date:'dd/MM/yyyy, HH:mm' }}</td>
-            <td>{{ s.salida ? (s.salida | date:'dd/MM/yyyy, HH:mm') : '-' }}</td>
+            <td>{{ s.entrada | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ s.salida ? (s.salida | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
             <td class="text-end pe-4">
               <span [class]="s.salida ? 'badge-closed' : 'badge-active'">
-                {{ s.salida ? 'cerrado' : 'activo' }}
+                {{ s.salida ? 'Cerrada' : 'Activa' }}
               </span>
             </td>
           </tr>
+          } @empty {
+          <tr><td colspan="6" class="text-center py-5 text-muted">No hay sesiones registradas.</td></tr>
+          }
         </tbody>
       </table>
     </div>
