@@ -2,28 +2,31 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Producto } from '../model/producto';
+import { environment } from '../../../enviroments/enviroment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProductoService {
-  private apiUrl = 'http://localhost:8080/api/productos'; // Ajusta según tu backend
+  private url = `${environment.apiUrl}/productos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  listarTodos(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(this.apiUrl);
+  listar(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(this.url);
   }
 
-  crear(producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.apiUrl, producto);
+  buscar(termino: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.url}/buscar`, { params: { termino } });
   }
 
-  actualizar(id: number, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+  crear(data: any): Observable<Producto> {
+    return this.http.post<Producto>(this.url, data);
   }
 
-  eliminar(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  editar(id: number, data: any): Observable<Producto> {
+    return this.http.put<Producto>(`${this.url}/${id}`, data);
+  }
+
+  cambiarEstado(id: number): Observable<Producto> {
+    return this.http.patch<Producto>(`${this.url}/${id}/estado`, {});
   }
 }

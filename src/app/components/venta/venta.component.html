@@ -1,98 +1,242 @@
 <div class="container-fluid p-4">
-  <button (click)="regresar()" class="btn-back mb-4">
-    <i class="bi bi-arrow-left"></i> Regresar
-  </button>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <button (click)="irA('/dashboard')" class="btn-back shadow-sm">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="fw-bold text-charcoal mb-0">Registro de Ventas</h2>
+      <p class="text-secondary small mb-0">Selecciona productos y confirma la venta</p>
+    </div>
+  </div>
 
+  @if (ventaExitosa) {
+    <div class="alert alert-success rounded-3 mb-4">
+      <i class="bi bi-check-circle-fill me-2"></i> Venta registrada exitosamente
+    </div>
+  }
+
+  <!-- Tabs: Registro / Historial (solo ADMIN) -->
+  @if (esAdmin) {
+    <ul class="nav nav-pills mb-4 gap-2 p-1 bg-mist rounded-pill d-inline-flex shadow-sm">
+      <li class="nav-item">
+        <button class="nav-link rounded-pill px-4" [class.active]="!mostrarHistorial" (click)="mostrarHistorial = false">
+          <i class="bi bi-cart-plus me-2"></i> Nueva Venta
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link rounded-pill px-4" [class.active]="mostrarHistorial" (click)="mostrarHistorial = true">
+          <i class="bi bi-clock-history me-2"></i> Historial
+        </button>
+      </li>
+    </ul>
+  }
+
+  <!-- REGISTRO DE VENTA -->
+  @if (!mostrarHistorial) {
   <div class="row g-4">
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-        <h5 class="fw-bold text-charcoal mb-4">Registrar Nueva Venta</h5>
-        
+        <h6 class="fw-bold text-charcoal mb-3">Buscar Producto</h6>
         <div class="position-relative">
-          <label class="small fw-bold text-muted mb-2">BUSCAR PRODUCTO</label>
-          <div class="input-group-mist">
+          <div class="input-group-pharman">
             <i class="bi bi-search"></i>
-            <input type="text" class="form-control-mist" 
-                   [(ngModel)]="busqueda" (input)="buscarProducto()"
-                   placeholder="Escriba el nombre del medicamento...">
+            <input type="text" class="form-control-mist" [(ngModel)]="busqueda"
+                   (input)="buscarProducto()" placeholder="Nombre o código del producto...">
           </div>
-
-          <ul class="list-group position-absolute w-100 shadow-sm z-3" *ngIf="productosFiltrados.length > 0">
-            <li class="list-group-item list-group-item-action d-flex justify-content-between" 
-                *ngFor="let p of productosFiltrados" (click)="agregarAlCarrito(p)">
-              <span>{{ p.nombre }}</span>
-              <span class="fw-bold text-jungle">S/ {{ p.precio }}</span>
-            </li>
-          </ul>
+          @if (productosFiltrados.length > 0) {
+            <ul class="list-group position-absolute w-100 shadow z-3 mt-1">
+              @for (p of productosFiltrados; track p.id) {
+                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                    (click)="agregarAlCarrito(p)">
+                  <div>
+                    <span class="fw-bold text-charcoal">{{ p.nombre }}</span>
+                    <small class="text-muted ms-2">{{ p.codigo }}</small>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-jungle">S/ {{ p.precio.toFixed(2) }}</span>
+                    <small class="text-muted d-block">Stock: {{ p.stock }}</small>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
         </div>
       </div>
 
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <table class="table align-middle mb-0">
-          <thead class="bg-azure-light">
+          <thead class="bg-azure-light text-muted small text-uppercase">
             <tr>
-              <th class="ps-4">Producto</th>
-              <th>Precio</th>
-              <th width="120">Cant.</th>
-              <th>Subtotal</th>
-              <th class="text-end pe-4"></th>
+              <th class="ps-4 py-3">Producto</th>
+              <th class="py-3">Precio</th>
+              <th class="py-3" width="130">Cantidad</th>
+              <th class="py-3">Subtotal</th>
+              <th class="py-3"></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of carrito; let i = index">
-              <td class="ps-4 fw-bold text-charcoal">{{ item.nombre }}</td>
-              <td>S/ {{ item.precio }}</td>
-              <td>
-                <input type="number" class="form-control form-control-sm border-0 bg-light" 
-                       [(ngModel)]="item.cantidad" (change)="calcularTotal()">
+            @for (item of carrito; track item.id; let i = $index) {
+            <tr class="border-bottom-mist" [class.row-sin-stock]="item.stock === 0">
+              <td class="ps-4">
+                <div class="fw-bold text-charcoal">{{ item.nombre }}</div>
+                <small [class]="item.stock < 5 ? 'text-danger fw-bold' : 'text-muted'">
+                  Stock disponible: {{ item.stock }}
+                  @if (item.stock === 0) { <span class="ms-1">⚠️ Sin stock</span> }
+                  @else if (item.stock < 5) { <span class="ms-1">⚠️ Bajo</span> }
+                </small>
               </td>
-              <td class="fw-bold text-jungle">S/ {{ item.precio * item.cantidad }}</td>
-              <td class="text-end pe-4">
+              <td>S/ {{ item.precio.toFixed(2) }}</td>
+              <td>
+                <input type="number" class="form-control form-control-sm text-center"
+                       [ngModel]="item.cantidad"
+                       (ngModelChange)="cambiarCantidad(item, $event)"
+                       min="1" [max]="item.stock"
+                       [class.border-danger]="item.cantidad > item.stock">
+              </td>
+              <td class="fw-bold text-jungle">S/ {{ (item.precio * item.cantidad).toFixed(2) }}</td>
+              <td>
                 <button class="btn btn-sm text-danger" (click)="eliminarItem(i)">
                   <i class="bi bi-trash"></i>
                 </button>
               </td>
             </tr>
-            <tr *ngIf="carrito.length === 0">
+            } @empty {
+            <tr>
               <td colspan="5" class="text-center py-5 text-muted">
-                <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
-                El carrito está vacío
+                <i class="bi bi-cart-x fs-1 d-block mb-2"></i> El carrito está vacío
               </td>
             </tr>
+            }
           </tbody>
         </table>
       </div>
     </div>
 
     <div class="col-lg-4">
-      <div class="card border-0 shadow-lg rounded-4 p-4 bg-charcoal text-white h-100">
+      <div class="card border-0 shadow-lg rounded-4 p-4 bg-charcoal text-white">
         <h5 class="fw-bold mb-4">Resumen de Venta</h5>
-        
         <div class="mb-4">
-          <label class="small opacity-75 d-block mb-2">MÉTODO DE PAGO</label>
-          <select class="form-select bg-white bg-opacity-10 border-0 text-white" [(ngModel)]="metodoPago">
+          <label class="small opacity-75 d-block mb-2">MÉTODO DE PAGO *</label>
+          <select class="form-select bg-white text-charcoal border-0 rounded-3" [(ngModel)]="metodoPago">
+            <option value="" disabled>Seleccionar...</option>
             <option value="Efectivo">Efectivo</option>
             <option value="Tarjeta">Tarjeta</option>
             <option value="Transferencia">Transferencia</option>
           </select>
         </div>
-
+        @if (errorVenta) {
+          <div class="alert-stock mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorVenta }}
+          </div>
+        }
         <div class="mt-auto">
-          <div class="d-flex justify-content-between mb-2 opacity-75">
-            <span>Subtotal:</span>
-            <span>S/ {{ (totalVenta / 1.18).toFixed(2) }}</span>
+          <div class="d-flex justify-content-between mb-4 pt-3 border-top border-white border-opacity-25">
+            <span class="fs-5 fw-bold">TOTAL:</span>
+            <span class="fs-5 fw-bold text-jungle-light">S/ {{ totalVenta.toFixed(2) }}</span>
           </div>
-          <div class="d-flex justify-content-between mb-4">
-            <span class="fs-4 fw-bold">TOTAL:</span>
-            <span class="fs-4 fw-bold text-jungle">S/ {{ totalVenta.toFixed(2) }}</span>
-          </div>
-          
-          <button class="btn btn-jungle w-100 py-3 rounded-pill fw-bold shadow" 
-                  [disabled]="carrito.length === 0" (click)="finalizarVenta()">
-            CONFIRMAR VENTA
+          <button class="btn btn-jungle w-100 py-3 rounded-pill fw-bold shadow"
+                  [disabled]="carrito.length === 0 || !metodoPago" (click)="finalizarVenta()">
+            <i class="bi bi-check-circle me-2"></i> CONFIRMAR VENTA
           </button>
         </div>
       </div>
     </div>
   </div>
+  }
+
+  <!-- HISTORIAL (solo ADMIN) -->
+  @if (mostrarHistorial && esAdmin) {
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small fw-bold text-muted">DESDE</label>
+        <input type="date" class="form-control" [(ngModel)]="filtroDesde">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small fw-bold text-muted">HASTA</label>
+        <input type="date" class="form-control" [(ngModel)]="filtroHasta">
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-jungle rounded-pill px-4 w-100" (click)="filtrarPorFecha()">
+          <i class="bi bi-funnel me-2"></i> Filtrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="bg-azure-light text-muted small text-uppercase">
+          <tr>
+            <th class="ps-4 py-3">#</th>
+            <th class="py-3">Fecha</th>
+            <th class="py-3">Usuario</th>
+            <th class="py-3">Método</th>
+            <th class="py-3 text-end">Total</th>
+            <th class="py-3 text-end pe-4">Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of historial; track v.id) {
+          <tr class="border-bottom-mist">
+            <td class="ps-4 text-muted small">VTA-{{ v.id }}</td>
+            <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="fw-bold text-charcoal">{{ v.usuarioNombre }}</td>
+            <td><span class="badge-method">{{ v.metodoPago }}</span></td>
+            <td class="text-end fw-bold text-jungle">S/ {{ v.total.toFixed(2) }}</td>
+            <td class="text-end pe-4">
+              <button class="btn btn-action-teal btn-sm" (click)="verDetalle(v)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr><td colspan="6" class="text-center py-5 text-muted">No hay ventas registradas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  }
 </div>
+
+<!-- MODAL DETALLE VENTA -->
+@if (ventaDetalle) {
+<div class="modal-backdrop-custom" (click)="cerrarDetalle()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:520px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5 class="fw-bold mb-0 text-charcoal">Detalle de Venta #{{ ventaDetalle.id }}</h5>
+        <small class="text-muted">{{ ventaDetalle.fecha | date:'dd/MM/yyyy HH:mm' }} — {{ ventaDetalle.usuarioNombre }}</small>
+      </div>
+      <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarDetalle()">✕</button>
+    </div>
+    <table class="table table-sm mb-3">
+      <thead class="bg-azure-light text-muted small">
+        <tr>
+          <th>Producto</th>
+          <th class="text-center">Cant.</th>
+          <th class="text-end">P. Unit.</th>
+          <th class="text-end">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of ventaDetalle.detalles; track $index) {
+        <tr>
+          <td>{{ d.productoNombre }}</td>
+          <td class="text-center">{{ d.cantidad }}</td>
+          <td class="text-end">S/ {{ d.precioUnitario.toFixed(2) }}</td>
+          <td class="text-end fw-bold">S/ {{ d.subtotal.toFixed(2) }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+      <span class="badge-method">{{ ventaDetalle.metodoPago }}</span>
+      <span class="fs-5 fw-bold text-jungle">TOTAL: S/ {{ ventaDetalle.total.toFixed(2) }}</span>
+    </div>
+  </div>
+</div>
+}

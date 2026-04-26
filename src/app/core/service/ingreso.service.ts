@@ -4,20 +4,16 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({ providedIn: 'root' })
-export class VentaService {
-  private url = `${environment.apiUrl}/ventas`;
+export class IngresoService {
+  private url = `${environment.apiUrl}/ingresos`;
 
   constructor(private http: HttpClient) {}
 
-  registrar(venta: any): Observable<any> {
-    return this.http.post<any>(this.url, venta);
+  registrar(data: any): Observable<any> {
+    return this.http.post<any>(this.url, data);
   }
 
   listar(): Observable<any[]> {
     return this.http.get<any[]>(this.url);
-  }
-
-  filtrarPorFecha(desde: string, hasta: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/filtrar`, { params: { desde, hasta } });
   }
 }

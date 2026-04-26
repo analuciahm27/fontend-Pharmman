@@ -1,0 +1,147 @@
+<div class="container-fluid p-4">
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <button (click)="irA('/dashboard')" class="btn-back shadow-sm">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="fw-bold text-charcoal mb-0">Registro de Ingresos</h2>
+      <p class="text-secondary small mb-0">Ingreso de productos al inventario</p>
+    </div>
+  </div>
+
+  @if (exitoso) {
+    <div class="alert alert-success rounded-3 mb-4">
+      <i class="bi bi-check-circle-fill me-2"></i> Ingreso registrado y stock actualizado
+    </div>
+  }
+
+  @if (esAdmin) {
+    <ul class="nav nav-pills mb-4 gap-2 p-1 bg-mist rounded-pill d-inline-flex shadow-sm">
+      <li class="nav-item">
+        <button class="nav-link rounded-pill px-4" [class.active]="!mostrarHistorial" (click)="mostrarHistorial = false">
+          <i class="bi bi-box-arrow-in-down me-2"></i> Nuevo Ingreso
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link rounded-pill px-4" [class.active]="mostrarHistorial" (click)="mostrarHistorial = true">
+          <i class="bi bi-clock-history me-2"></i> Historial
+        </button>
+      </li>
+    </ul>
+  }
+
+  <!-- REGISTRO -->
+  @if (!mostrarHistorial) {
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <h6 class="fw-bold text-charcoal mb-3">Buscar Producto</h6>
+        <div class="position-relative">
+          <div class="input-group-pharman">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control-mist" [(ngModel)]="busqueda"
+                   (input)="buscarProducto()" placeholder="Nombre o código del producto...">
+          </div>
+          @if (productosFiltrados.length > 0) {
+            <ul class="list-group position-absolute w-100 shadow z-3 mt-1">
+              @for (p of productosFiltrados; track p.id) {
+                <li class="list-group-item list-group-item-action d-flex justify-content-between"
+                    (click)="agregarItem(p)">
+                  <span class="fw-bold text-charcoal">{{ p.nombre }}</span>
+                  <small class="text-muted">Stock actual: {{ p.stock }}</small>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <table class="table align-middle mb-0">
+          <thead class="bg-azure-light text-muted small text-uppercase">
+            <tr>
+              <th class="ps-4 py-3">Producto</th>
+              <th class="py-3">Stock Actual</th>
+              <th class="py-3" width="150">Cantidad a Ingresar</th>
+              <th class="py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items; track item.producto.id; let i = $index) {
+            <tr class="border-bottom-mist">
+              <td class="ps-4 fw-bold text-charcoal">{{ item.producto.nombre }}</td>
+              <td><span class="stock-ok">{{ item.producto.stock }}</span></td>
+              <td>
+                <input type="number" class="form-control form-control-sm text-center"
+                       [(ngModel)]="item.cantidad" min="1">
+              </td>
+              <td>
+                <button class="btn btn-sm text-danger" (click)="eliminarItem(i)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="4" class="text-center py-5 text-muted">
+                <i class="bi bi-box-seam fs-1 d-block mb-2"></i> Agrega productos para ingresar
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-lg rounded-4 p-4 bg-charcoal text-white">
+        <h5 class="fw-bold mb-3">Resumen</h5>
+        <p class="opacity-75 small">{{ items.length }} producto(s) a ingresar</p>
+        @if (errorMsg) {
+          <small class="text-warning d-block mb-3"><i class="bi bi-exclamation-triangle me-1"></i>{{ errorMsg }}</small>
+        }
+        <div class="mt-4 pt-3 border-top border-white border-opacity-25">
+          <button class="btn btn-jungle w-100 py-3 rounded-pill fw-bold shadow"
+                  [disabled]="items.length === 0" (click)="confirmarIngreso()">
+            <i class="bi bi-check-circle me-2"></i> CONFIRMAR INGRESO
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- HISTORIAL (solo ADMIN) -->
+  @if (mostrarHistorial && esAdmin) {
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="bg-azure-light text-muted small text-uppercase">
+          <tr>
+            <th class="ps-4 py-3">#</th>
+            <th class="py-3">Fecha</th>
+            <th class="py-3">Usuario</th>
+            <th class="py-3">Productos Ingresados</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ing of historial; track ing.id) {
+          <tr class="border-bottom-mist">
+            <td class="ps-4 text-muted small">ING-{{ ing.id }}</td>
+            <td>{{ ing.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="fw-bold text-charcoal">{{ ing.usuarioNombre }}</td>
+            <td>
+              @for (d of ing.detalles; track $index) {
+                <span class="badge-item me-1">{{ d.productoNombre }} ({{ d.cantidad }})</span>
+              }
+            </td>
+          </tr>
+          } @empty {
+          <tr><td colspan="4" class="text-center py-5 text-muted">No hay ingresos registrados.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  }
+</div>

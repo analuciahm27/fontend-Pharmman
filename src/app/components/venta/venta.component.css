@@ -1,41 +1,62 @@
 .text-charcoal { color: #374e62; }
+.text-jungle { color: #4d937f; }
+.text-jungle-light { color: #7ec8b0; }
+.btn-jungle { background-color: #4d937f; color: white; border: none; font-weight: 600; }
+.bg-charcoal { background-color: #374e62; }
+.bg-mist { background-color: #f0f9f9; }
 .bg-azure-light { background-color: #f8fafb; }
+.border-bottom-mist { border-bottom: 1px solid #f0f9f9; }
 
 .btn-back {
-  border: none;
-  background: transparent;
-  color: #8e8f8f;
+  border: none; background: white; color: #4d937f;
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; transition: 0.3s;
+}
+.btn-back:hover { background: #4d937f; color: white; transform: scale(1.1); }
+
+.input-group-pharman { position: relative; display: flex; align-items: center; }
+.input-group-pharman i { position: absolute; left: 15px; color: #8e8f8f; }
+.form-control-mist {
+  background-color: #f0f9f9; border: none; border-radius: 12px;
+  padding: 12px 15px 12px 45px; color: #374e62; width: 100%; font-size: 0.95rem;
+}
+
+.nav-pills .nav-link { color: #8e8f8f; font-weight: 600; transition: 0.3s; }
+.nav-pills .nav-link.active { background-color: #4d937f !important; box-shadow: 0 4px 10px rgba(77,147,127,0.3); }
+
+.badge-method {
+  background: #f0f9f9; color: #374e62;
+  padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+}
+
+.btn-action-teal {
+  background: #f0f9f9; color: #4d937f; border: none;
+  padding: 6px 10px; border-radius: 8px; transition: 0.2s;
+}
+.btn-action-teal:hover { background: #4d937f; color: white; }
+
+.row-sin-stock { background-color: #fff5f5; }
+
+.alert-stock {
+  background: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #f87171;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
   font-weight: 600;
-  transition: 0.2s;
-}
-.btn-back:hover { color: #4d937f; transform: translateX(-5px); }
-
-.badge-rol {
-  background: #f0f9f9;
-  color: #4d937f;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1px solid rgba(77, 147, 127, 0.2);
 }
 
-.badge-active {
-  color: #4d937f;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.7rem;
+.modal-backdrop-custom {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(55, 78, 98, 0.4); backdrop-filter: blur(6px); z-index: 1040;
 }
-
-.badge-closed {
-  background: #374e62;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  text-transform: uppercase;
+.modal-custom {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); z-index: 1050; width: 100%;
+  animation: slideUp 0.3s ease-out;
 }
-
-.border-bottom-mist {
-  border-bottom: 1px solid #f0f9f9;
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }

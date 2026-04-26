@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VentaService } from '../../core/service/venta.service';
 import { ProductoService } from '../../core/service/producto.service';
-import { Venta } from '../../core/model/venta';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
   selector: 'app-ventas',
@@ -14,71 +14,119 @@ import { Venta } from '../../core/model/venta';
   styleUrls: ['./venta.component.css']
 })
 export class VentasComponent implements OnInit {
-  carrito: any[] = [];
-  totalVenta: number = 0;
-  metodoPago: string = 'Efectivo';
 
-  // Datos simulados para el buscador
-  busqueda: string = '';
+  // Registro de venta
+  busqueda = '';
   productosFiltrados: any[] = [];
-  productosDB = [
-    { id: 1, nombre: 'Paracetamol 500mg', precio: 0.50, stock: 100 },
-    { id: 2, nombre: 'Ibuprofeno 400mg', precio: 1.20, stock: 50 }
-  ];
+  carrito: any[] = [];
+  metodoPago = '';
+  totalVenta = 0;
+  errorVenta = '';
+  ventaExitosa = false;
+
+  // Historial (solo ADMIN)
+  esAdmin = false;
+  historial: any[] = [];
+  mostrarHistorial = false;
+  ventaDetalle: any = null;
+  filtroDesde = '';
+  filtroHasta = '';
 
   constructor(
-  private ventaService: VentaService,    // Para guardar la venta
-  private productoService: ProductoService, // Para buscar productos reales
-  private router: Router
-) {}
+    private ventaService: VentaService,
+    private productoService: ProductoService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.esAdmin = this.authService.getRol() === 'ADMIN';
+    if (this.esAdmin) this.cargarHistorial();
   }
 
-  buscarProducto() {
-    this.productosFiltrados = this.productosDB.filter(p => 
-      p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
-    );
+  buscarProducto(): void {
+    if (!this.busqueda.trim()) { this.productosFiltrados = []; return; }
+    this.productoService.buscar(this.busqueda).subscribe({
+      next: (data) => this.productosFiltrados = data.filter(p => p.activo),
+      error: () => this.productosFiltrados = []
+    });
   }
 
-  agregarAlCarrito(prod: any) {
-    const item = { ...prod, cantidad: 1, subtotal: prod.precio };
-    this.carrito.push(item);
+  agregarAlCarrito(prod: any): void {
+    const existente = this.carrito.find(i => i.id === prod.id);
+    if (existente) {
+      if (existente.cantidad < existente.stock) existente.cantidad++;
+      else { this.errorVenta = `Stock máximo disponible: ${existente.stock}`; return; }
+    } else {
+      if (prod.stock === 0) { this.errorVenta = 'Producto sin stock disponible'; return; }
+      this.carrito.push({ ...prod, cantidad: 1 });
+    }
+    this.errorVenta = '';
     this.calcularTotal();
     this.busqueda = '';
     this.productosFiltrados = [];
   }
 
-  calcularTotal() {
-    this.totalVenta = this.carrito.reduce((acc, item) => acc + item.subtotal, 0);
+  cambiarCantidad(item: any, cantidad: number): void {
+    if (cantidad < 1) return;
+    if (cantidad > item.stock) { this.errorVenta = `Stock máximo: ${item.stock}`; return; }
+    item.cantidad = cantidad;
+    this.errorVenta = '';
+    this.calcularTotal();
   }
 
-  eliminarItem(index: number) {
+  eliminarItem(index: number): void {
     this.carrito.splice(index, 1);
     this.calcularTotal();
   }
 
-  finalizarVenta() {
-    const nuevaVenta: Venta = {
+  calcularTotal(): void {
+    this.totalVenta = this.carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
+  }
+
+  finalizarVenta(): void {
+    if (!this.metodoPago) { this.errorVenta = 'Selecciona un método de pago'; return; }
+    if (this.carrito.length === 0) { this.errorVenta = 'El carrito está vacío'; return; }
+
+    const request = {
       metodoPago: this.metodoPago,
-      total: this.totalVenta,
-      usuarioId: 1, // Basado en tu SQL (Carlos García)
-      detalles: this.carrito.map(item => ({
-        productoId: item.id,
-        cantidad: item.cantidad,
-        precioUnitario: item.precio,
-        subtotal: item.precio * item.cantidad
-      }))
+      detalles: this.carrito.map(i => ({ productoId: i.id, cantidad: i.cantidad }))
     };
 
-    this.ventaService.registrarVenta(nuevaVenta).subscribe({
-      next: (response) => {
-        alert('Venta realizada con éxito');
+    this.ventaService.registrar(request).subscribe({
+      next: () => {
+        this.ventaExitosa = true;
         this.carrito = [];
         this.totalVenta = 0;
+        this.metodoPago = '';
+        this.errorVenta = '';
+        if (this.esAdmin) this.cargarHistorial();
+        setTimeout(() => this.ventaExitosa = false, 3000);
       },
+      error: (err) => this.errorVenta = err.error?.mensaje || 'Error al registrar la venta'
+    });
+  }
+
+  // Historial
+  cargarHistorial(): void {
+    this.ventaService.listar().subscribe({
+      next: (data) => this.historial = data,
       error: (err) => console.error(err)
     });
   }
-  regresar() { this.router.navigate(['/dashboard']); }
+
+  filtrarPorFecha(): void {
+    if (!this.filtroDesde || !this.filtroHasta) return;
+    const desde = `${this.filtroDesde}T00:00:00`;
+    const hasta = `${this.filtroHasta}T23:59:59`;
+    this.ventaService.filtrarPorFecha(desde, hasta).subscribe({
+      next: (data) => this.historial = data,
+      error: (err) => console.error(err)
+    });
+  }
+
+  verDetalle(venta: any): void { this.ventaDetalle = venta; }
+  cerrarDetalle(): void { this.ventaDetalle = null; }
+
+  irA(ruta: string): void { this.router.navigate([ruta]); }
 }

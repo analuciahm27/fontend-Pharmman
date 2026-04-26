@@ -1,50 +1,58 @@
 <div class="app-layout d-flex">
   <aside class="sidebar shadow-lg">
-  <div class="d-flex align-items-center gap-3 mb-5 mt-2">
-    <div class="brand-logo text-white">P</div>
-    <div>
-      <h1 class="brand-title">PharMan</h1>
-      <span class="brand-subtitle">Panel Administrativo</span>
+    <div class="d-flex align-items-center gap-3 mb-5 mt-2">
+      <div class="brand-logo text-white">P</div>
+      <div>
+        <h1 class="brand-title">PharMan</h1>
+        <span class="brand-subtitle">Panel Administrativo</span>
+      </div>
     </div>
-  </div>
 
-  <nav class="nav flex-column overflow-auto">
-    <a routerLink="/dashboard" routerLinkActive="active" class="nav-link side-link "(click)="irA('/dashboard')">
-      <i class="bi bi-grid-1x2-fill"></i> Dashboard
-    </a>
-    <a routerLink="/usuarios" routerLinkActive="active" class="nav-link side-link "(click)="irA('/usuarios')">
-       <i class="bi bi-people-fill"></i> Usuarios
-    </a>
-    <a routerLink="/productos" routerLinkActive="active" class="nav-link side-link"(click)="irA('/productos')">
-      <i class="bi bi-capsule"></i> Productos
-    </a>
-    <a routerLink="/ventas" routerLinkActive="active" class="nav-link side-link"(click)="irA('/ventas')">
-      <i class="bi bi-cart-fill"></i> Ventas
-    </a>
-    <a routerLink="/sesiones" routerLinkActive="active" class="nav-link side-link"(click)="irA('/sesiones')">
-      <i class="bi bi-clock-history"></i> Sesiones
-    </a>
-  </nav>
+    <nav class="nav flex-column overflow-auto">
+      <a class="nav-link side-link" (click)="irA('/dashboard')">
+        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+      </a>
+      @if (esAdmin) {
+        <a class="nav-link side-link" (click)="irA('/usuarios')">
+          <i class="bi bi-people-fill"></i> Usuarios
+        </a>
+      }
+      <a class="nav-link side-link" (click)="irA('/productos')">
+        <i class="bi bi-capsule"></i> Productos
+      </a>
+      <a class="nav-link side-link" (click)="irA('/ventas')">
+        <i class="bi bi-cart-fill"></i> Ventas
+      </a>
+      <a class="nav-link side-link" (click)="irA('/ingresos')">
+        <i class="bi bi-box-arrow-in-down"></i> Ingresos
+      </a>
+      @if (esAdmin) {
+        <a class="nav-link side-link" (click)="irA('/sesiones')">
+          <i class="bi bi-clock-history"></i> Sesiones
+        </a>
+      }
+    </nav>
 
-  <div class="user-box">
-    <div class="d-flex align-items-center gap-2 mb-2">
-      <div class="avatar-small bg-white text-dark rounded-circle text-center" style="width: 24px; height: 24px; font-size: 0.8rem;">C</div>
-      <span class="small fw-bold">Carlos García</span>
+    <div class="user-box">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <div class="avatar-small bg-white text-dark rounded-circle text-center fw-bold"
+             style="width:28px;height:28px;line-height:28px;font-size:0.85rem;">
+          {{ usuario?.nombre?.charAt(0) }}
+        </div>
+        <span class="small fw-bold">{{ usuario?.nombre }} {{ usuario?.apellidoPaterno }}</span>
+      </div>
+      <small class="text-uppercase opacity-50" style="font-size:0.65rem;">{{ usuario?.rol }}</small>
+      <button (click)="logout()" class="btn-logout w-100 mt-3">Cerrar sesión</button>
     </div>
-    <small class="text-uppercase opacity-50" style="font-size: 0.65rem;">Administrador</small>
-    <button (click)="logout()" class="btn-logout w-100 mt-3">
-      Cerrar sesión
-    </button>
-  </div>
-</aside>
+  </aside>
 
   <div class="content-area flex-grow-1">
     <nav class="navbar topbar navbar-expand shadow-sm px-4 py-3">
       <div class="container-fluid">
-        <span class="navbar-brand fw-bold mb-0" style="color: #374e62;">Bienvenido, {{ usuario?.nombre }}</span>
-        <span class="badge user-badge rounded-pill px-3 py-2 uppercase">
-          {{ usuario?.rol }}
+        <span class="navbar-brand fw-bold mb-0" style="color:#374e62;">
+          Bienvenido, {{ usuario?.nombre }}
         </span>
+        <span class="badge user-badge rounded-pill px-3 py-2">{{ usuario?.rol }}</span>
       </div>
     </nav>
 
@@ -52,19 +60,17 @@
       <div class="card hero-card border-0 shadow-lg rounded-4 mb-4">
         <div class="card-body p-5">
           <h1 class="display-5 fw-bold mb-2">Panel de trabajo</h1>
-          <p class="fs-5">
-            Accede rápido a los módulos principales del sistema.
-          </p>
+          <p class="fs-5">Accede rápido a los módulos del sistema.</p>
         </div>
       </div>
 
       <div class="card modules-card border-0 shadow-sm rounded-4 p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h5 class="fw-bold mb-0" style="color: #374e62;">Módulos del sistema</h5>
+          <h5 class="fw-bold mb-0" style="color:#374e62;">Módulos del sistema</h5>
           <span class="badge section-badge rounded-pill px-3 py-2">Accesos rápidos</span>
         </div>
-
         <div class="row g-4">
+          @if (esAdmin) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/usuarios')">
               <div class="card-body text-center">
@@ -74,7 +80,46 @@
               </div>
             </div>
           </div>
+          }
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/productos')">
+              <div class="card-body text-center">
+                <div class="module-icon mb-2">💊</div>
+                <h6 class="fw-bold mb-1">Productos</h6>
+                <small class="text-muted">Inventario</small>
+              </div>
+            </div>
           </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/ventas')">
+              <div class="card-body text-center">
+                <div class="module-icon mb-2">🛒</div>
+                <h6 class="fw-bold mb-1">Ventas</h6>
+                <small class="text-muted">Registro</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/ingresos')">
+              <div class="card-body text-center">
+                <div class="module-icon mb-2">📦</div>
+                <h6 class="fw-bold mb-1">Ingresos</h6>
+                <small class="text-muted">Inventario</small>
+              </div>
+            </div>
+          </div>
+          @if (esAdmin) {
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/sesiones')">
+              <div class="card-body text-center">
+                <div class="module-icon mb-2">🕐</div>
+                <h6 class="fw-bold mb-1">Sesiones</h6>
+                <small class="text-muted">Asistencia</small>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
       </div>
     </main>
   </div>
