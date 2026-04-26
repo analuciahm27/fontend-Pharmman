@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { IngresoService } from '../../core/service/ingreso.service';
 import { ProductoService } from '../../core/service/producto.service';
 import { AuthService } from '../../core/service/auth.service';
+import { mensajeError } from '../../core/utils/http-error.util';
 
 @Component({
   selector: 'app-ingreso',
@@ -80,7 +81,7 @@ export class IngresoComponent implements OnInit {
         if (this.esAdmin) this.cargarHistorial();
         setTimeout(() => this.exitoso = false, 3000);
       },
-      error: (err) => this.errorMsg = err.error?.mensaje || 'Error al registrar el ingreso'
+      error: (err) => this.errorMsg = mensajeError(err)
     });
   }
 

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductoService } from '../../core/service/producto.service';
 import { CategoriaService } from '../../core/service/categoria.service';
 import { AuthService } from '../../core/service/auth.service';
+import { mensajeError } from '../../core/utils/http-error.util';
 
 @Component({
   selector: 'app-producto',
@@ -113,20 +114,22 @@ export class ProductoComponent implements OnInit {
     if (this.modoEdicion) {
       this.productoService.editar(this.productoSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },
-        error: (err) => this.errorMsg = err.error?.mensaje || 'Error al guardar'
+        error: (err) => this.errorMsg = mensajeError(err)
       });
     } else {
       this.productoService.crear(this.form).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },
-        error: (err) => this.errorMsg = err.error?.mensaje || 'Error al crear'
+        error: (err) => this.errorMsg = mensajeError(err)
       });
     }
   }
 
   toggleEstado(p: any): void {
+    const accion = p.activo ? 'desactivar' : 'activar';
+    if (!confirm(`¿Estás seguro de que deseas ${accion} el producto "${p.nombre}"?`)) return;
     this.productoService.cambiarEstado(p.id).subscribe({
       next: (resp) => p.activo = resp.activo,
-      error: (err) => console.error(err)
+      error: (err) => this.errorMsg = mensajeError(err)
     });
   }
 

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../core/service/usuario.service';
 import { RolService } from '../../core/service/rol.service';
 import { AuthService } from '../../core/service/auth.service';
+import { mensajeError } from '../../core/utils/http-error.util';
 
 @Component({
   selector: 'app-usuarios',
@@ -147,20 +148,22 @@ export class UsuariosComponent implements OnInit {
     if (this.modoEdicion) {
       this.usuarioService.editar(this.usuarioSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
-        error: (err) => this.errorForm = err.error?.mensaje || 'Error al editar usuario'
+        error: (err) => this.errorForm = mensajeError(err)
       });
     } else {
       this.usuarioService.crear(this.form).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
-        error: (err) => this.errorForm = err.error?.mensaje || 'Error al crear usuario'
+        error: (err) => this.errorForm = mensajeError(err)
       });
     }
   }
 
   toggleEstado(user: any): void {
+    const accion = user.estado ? 'desactivar' : 'activar';
+    if (!confirm(`¿Estás seguro de que deseas ${accion} al usuario ${user.nombre} ${user.apellidoPaterno}?`)) return;
     this.usuarioService.cambiarEstado(user.id).subscribe({
       next: (resp) => user.estado = resp.estado,
-      error: (err) => console.error(err)
+      error: (err) => console.error(mensajeError(err))
     });
   }
 
