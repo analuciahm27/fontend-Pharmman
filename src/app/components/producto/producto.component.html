@@ -83,8 +83,8 @@
             </td>
             @if (puedeEscribir) {
             <td class="text-end pe-4">
-              <button class="btn btn-action-teal" (click)="abrirModalEditar(p)">
-                <i class="bi bi-pencil-fill"></i>
+              <button class="btn btn-action-teal" (click)="abrirModalEditar(p)" aria-label="Editar producto">
+                <i class="bi bi-pencil-fill" aria-hidden="true"></i>
               </button>
             </td>
             }

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { VentaService } from '../../core/service/venta.service';
 import { ProductoService } from '../../core/service/producto.service';
 import { AuthService } from '../../core/service/auth.service';
+import { mensajeError } from '../../core/utils/http-error.util';
 
 @Component({
   selector: 'app-ventas',
@@ -110,7 +111,7 @@ export class VentasComponent implements OnInit {
         if (this.esAdmin) this.cargarHistorial();
         setTimeout(() => this.ventaExitosa = false, 3000);
       },
-      error: (err) => this.errorVenta = err.error?.mensaje || 'Error al registrar la venta'
+      error: (err) => this.errorVenta = mensajeError(err)
     });
   }
 
