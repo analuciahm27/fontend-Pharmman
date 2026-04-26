@@ -112,6 +112,7 @@ export class ProductoComponent implements OnInit {
     this.errorMsg = '';
 
     if (this.modoEdicion) {
+      if (!confirm(`¿Guardar los cambios del producto "${this.form.nombre}"?`)) return;
       this.productoService.editar(this.productoSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },
         error: (err) => this.errorMsg = mensajeError(err)

@@ -146,6 +146,7 @@ export class UsuariosComponent implements OnInit {
     this.errorForm = '';
 
     if (this.modoEdicion) {
+      if (!confirm(`¿Guardar los cambios del usuario ${this.form.nombre} ${this.form.apellidoPaterno}?`)) return;
       this.usuarioService.editar(this.usuarioSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
         error: (err) => this.errorForm = mensajeError(err)

@@ -84,6 +84,7 @@ export class VentasComponent implements OnInit {
   }
 
   eliminarItem(index: number): void {
+    if (!confirm('¿Eliminar este producto del carrito?')) return;
     this.carrito.splice(index, 1);
     this.calcularTotal();
   }
@@ -95,6 +96,7 @@ export class VentasComponent implements OnInit {
   finalizarVenta(): void {
     if (!this.metodoPago) { this.errorVenta = 'Selecciona un método de pago'; return; }
     if (this.carrito.length === 0) { this.errorVenta = 'El carrito está vacío'; return; }
+    if (!confirm(`¿Confirmar venta por S/ ${this.totalVenta.toFixed(2)} con método de pago ${this.metodoPago}?`)) return;
 
     const request = {
       metodoPago: this.metodoPago,
