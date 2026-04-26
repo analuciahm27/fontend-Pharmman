@@ -15,6 +15,10 @@ export class DashboardComponent {
   usuario = this.auth.getUsuario();
   esAdmin = this.auth.getRol() === 'ADMIN';
 
+  tieneAcceso(modulo: string): boolean {
+    return this.esAdmin || this.auth.tienePermiso(`${modulo}_lectura`);
+  }
+
   constructor(private auth: AuthService, private router: Router) {}
 
   irA(ruta: string): void { this.router.navigate([ruta]); }

@@ -12,21 +12,27 @@
       <a class="nav-link side-link" (click)="irA('/dashboard')">
         <i class="bi bi-grid-1x2-fill"></i> Dashboard
       </a>
-      @if (esAdmin) {
+      @if (tieneAcceso('USUARIOS')) {
         <a class="nav-link side-link" (click)="irA('/usuarios')">
           <i class="bi bi-people-fill"></i> Usuarios
         </a>
       }
-      <a class="nav-link side-link" (click)="irA('/productos')">
-        <i class="bi bi-capsule"></i> Productos
-      </a>
-      <a class="nav-link side-link" (click)="irA('/ventas')">
-        <i class="bi bi-cart-fill"></i> Ventas
-      </a>
-      <a class="nav-link side-link" (click)="irA('/ingresos')">
-        <i class="bi bi-box-arrow-in-down"></i> Ingresos
-      </a>
-      @if (esAdmin) {
+      @if (tieneAcceso('Productos')) {
+        <a class="nav-link side-link" (click)="irA('/productos')">
+          <i class="bi bi-capsule"></i> Productos
+        </a>
+      }
+      @if (tieneAcceso('Ventas')) {
+        <a class="nav-link side-link" (click)="irA('/ventas')">
+          <i class="bi bi-cart-fill"></i> Ventas
+        </a>
+      }
+      @if (tieneAcceso('Ingresos')) {
+        <a class="nav-link side-link" (click)="irA('/ingresos')">
+          <i class="bi bi-box-arrow-in-down"></i> Ingresos
+        </a>
+      }
+      @if (tieneAcceso('Sesiones')) {
         <a class="nav-link side-link" (click)="irA('/sesiones')">
           <i class="bi bi-clock-history"></i> Sesiones
         </a>
@@ -70,7 +76,7 @@
           <span class="badge section-badge rounded-pill px-3 py-2">Accesos rápidos</span>
         </div>
         <div class="row g-4">
-          @if (esAdmin) {
+          @if (tieneAcceso('USUARIOS')) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/usuarios')">
               <div class="card-body text-center">
@@ -81,6 +87,7 @@
             </div>
           </div>
           }
+          @if (tieneAcceso('Productos')) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/productos')">
               <div class="card-body text-center">
@@ -90,6 +97,8 @@
               </div>
             </div>
           </div>
+          }
+          @if (tieneAcceso('Ventas')) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/ventas')">
               <div class="card-body text-center">
@@ -99,6 +108,8 @@
               </div>
             </div>
           </div>
+          }
+          @if (tieneAcceso('Ingresos')) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/ingresos')">
               <div class="card-body text-center">
@@ -108,7 +119,8 @@
               </div>
             </div>
           </div>
-          @if (esAdmin) {
+          }
+          @if (tieneAcceso('Sesiones')) {
           <div class="col-6 col-md-4 col-lg-2">
             <div class="card module-item border-0 h-100 p-2" role="button" (click)="irA('/sesiones')">
               <div class="card-body text-center">

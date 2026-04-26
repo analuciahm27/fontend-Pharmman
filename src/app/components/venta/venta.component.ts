@@ -26,6 +26,8 @@ export class VentasComponent implements OnInit {
 
   // Historial (solo ADMIN)
   esAdmin = false;
+  puedeEscribir = false;
+  sinPermiso = false;
   historial: any[] = [];
   mostrarHistorial = false;
   ventaDetalle: any = null;
@@ -41,6 +43,11 @@ export class VentasComponent implements OnInit {
 
   ngOnInit(): void {
     this.esAdmin = this.authService.getRol() === 'ADMIN';
+    this.puedeEscribir = this.esAdmin || this.authService.tienePermiso('Ventas_escritura');
+    if (!this.authService.tienePermiso('Ventas_lectura') && !this.esAdmin) {
+      this.sinPermiso = true;
+      return;
+    }
     if (this.esAdmin) this.cargarHistorial();
   }
 

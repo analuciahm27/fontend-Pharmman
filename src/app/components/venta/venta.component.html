@@ -9,6 +9,16 @@
     </div>
   </div>
 
+  @if (sinPermiso) {
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height:60vh">
+      <i class="bi bi-lock-fill text-muted" style="font-size:3rem"></i>
+      <h5 class="mt-3 text-charcoal">Sin acceso</h5>
+      <p class="text-muted">No tienes permiso para ver este módulo.</p>
+      <button class="btn btn-jungle rounded-pill px-4" (click)="irA('/dashboard')">Volver al inicio</button>
+    </div>
+  }
+
+  @if (!sinPermiso) {
   @if (ventaExitosa) {
     <div class="alert alert-success rounded-3 mb-4">
       <i class="bi bi-check-circle-fill me-2"></i> Venta registrada exitosamente
@@ -135,8 +145,9 @@
             <span class="fs-5 fw-bold text-jungle-light">S/ {{ totalVenta.toFixed(2) }}</span>
           </div>
           <button class="btn btn-jungle w-100 py-3 rounded-pill fw-bold shadow"
-                  [disabled]="carrito.length === 0 || !metodoPago" (click)="finalizarVenta()">
-            <i class="bi bi-check-circle me-2"></i> CONFIRMAR VENTA
+                  [disabled]="carrito.length === 0 || !metodoPago || !puedeEscribir" (click)="finalizarVenta()">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ puedeEscribir ? 'CONFIRMAR VENTA' : 'SIN PERMISO DE ESCRITURA' }}
           </button>
         </div>
       </div>
@@ -204,7 +215,46 @@
     </div>
   </div>
   }
+  } <!-- fin @if (!sinPermiso) -->
 </div>
+@if (ventaDetalle) {
+<div class="modal-backdrop-custom" (click)="cerrarDetalle()"></div>
+<div class="modal-custom">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:520px; max-width:95vw;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5 class="fw-bold mb-0 text-charcoal">Detalle de Venta #{{ ventaDetalle.id }}</h5>
+        <small class="text-muted">{{ ventaDetalle.fecha | date:'dd/MM/yyyy HH:mm' }} — {{ ventaDetalle.usuarioNombre }}</small>
+      </div>
+      <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarDetalle()">✕</button>
+    </div>
+    <table class="table table-sm mb-3">
+      <thead class="bg-azure-light text-muted small">
+        <tr>
+          <th>Producto</th>
+          <th class="text-center">Cant.</th>
+          <th class="text-end">P. Unit.</th>
+          <th class="text-end">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of ventaDetalle.detalles; track $index) {
+        <tr>
+          <td>{{ d.productoNombre }}</td>
+          <td class="text-center">{{ d.cantidad }}</td>
+          <td class="text-end">S/ {{ d.precioUnitario.toFixed(2) }}</td>
+          <td class="text-end fw-bold">S/ {{ d.subtotal.toFixed(2) }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+      <span class="badge-method">{{ ventaDetalle.metodoPago }}</span>
+      <span class="fs-5 fw-bold text-jungle">TOTAL: S/ {{ ventaDetalle.total.toFixed(2) }}</span>
+    </div>
+  </div>
+</div>
+}
 
 <!-- MODAL DETALLE VENTA -->
 @if (ventaDetalle) {

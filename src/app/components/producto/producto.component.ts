@@ -24,6 +24,8 @@ export class ProductoComponent implements OnInit {
   errorMsg = '';
   busqueda = '';
   esAdmin = false;
+  puedeEscribir = false;
+  sinPermiso = false;
 
   form = { codigo: '', nombre: '', descripcion: '', precio: 0, categoriaId: null as number | null };
   formCategoria = { nombre: '' };
@@ -38,6 +40,11 @@ export class ProductoComponent implements OnInit {
 
   ngOnInit(): void {
     this.esAdmin = this.authService.getRol() === 'ADMIN';
+    this.puedeEscribir = this.esAdmin || this.authService.tienePermiso('Productos_escritura');
+    if (!this.authService.tienePermiso('Productos_lectura') && !this.esAdmin) {
+      this.sinPermiso = true;
+      return;
+    }
     this.cargarProductos();
     this.cargarCategorias();
   }
