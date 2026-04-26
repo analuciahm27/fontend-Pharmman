@@ -14,6 +14,14 @@ export class DashboardComponent {
 
   usuario = this.auth.getUsuario();
   esAdmin = this.auth.getRol() === 'ADMIN';
+  fecha = new Date();
+
+  saludo(): string {
+    const hora = this.fecha.getHours();
+    if (hora < 12) return 'Buenos días';
+    if (hora < 18) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
 
   tieneAcceso(modulo: string): boolean {
     return this.esAdmin || this.auth.tienePermiso(`${modulo}_lectura`);
