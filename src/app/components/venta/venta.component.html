@@ -148,17 +148,22 @@
   @if (mostrarHistorial && esAdmin) {
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
     <div class="row g-3 align-items-end">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label small fw-bold text-muted">DESDE</label>
         <input type="date" class="form-control" [(ngModel)]="filtroDesde">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label small fw-bold text-muted">HASTA</label>
         <input type="date" class="form-control" [(ngModel)]="filtroHasta">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <button class="btn btn-jungle rounded-pill px-4 w-100" (click)="filtrarPorFecha()">
           <i class="bi bi-funnel me-2"></i> Filtrar
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-secondary rounded-pill px-4 w-100" (click)="limpiarFiltros()">
+          <i class="bi bi-x-circle me-2"></i> Limpiar
         </button>
       </div>
     </div>

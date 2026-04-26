@@ -83,6 +83,26 @@ export class ProductoComponent implements OnInit {
   cerrarModal(): void { this.mostrarModal = false; }
 
   guardar(): void {
+    // Validaciones
+    if (!this.form.codigo.trim()) {
+      this.errorMsg = 'El código es obligatorio';
+      return;
+    }
+    if (!this.form.nombre.trim()) {
+      this.errorMsg = 'El nombre es obligatorio';
+      return;
+    }
+    if (this.form.precio <= 0) {
+      this.errorMsg = 'El precio debe ser mayor a 0';
+      return;
+    }
+    if (!this.form.categoriaId) {
+      this.errorMsg = 'Debe seleccionar una categoría';
+      return;
+    }
+
+    this.errorMsg = '';
+
     if (this.modoEdicion) {
       this.productoService.editar(this.productoSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },

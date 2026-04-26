@@ -9,92 +9,98 @@
         <p class="text-secondary small mb-0">Gestión de personal y permisos del sistema</p>
       </div>
     </div>
-    <button class="btn btn-jungle rounded-pill px-4 shadow" (click)="abrirModalCrear()">
-      <i class="bi bi-person-plus-fill me-2"></i> Nuevo Usuario
-    </button>
+    @if (tabActivo === 'usuarios') {
+      <button class="btn btn-jungle rounded-pill px-4 shadow" (click)="abrirModalCrear()">
+        <i class="bi bi-person-plus-fill me-2"></i> Nuevo Usuario
+      </button>
+    } @else {
+      <button class="btn btn-jungle rounded-pill px-4 shadow" (click)="abrirModalCrearRol()">
+        <i class="bi bi-plus-circle me-2"></i> Nuevo Rol
+      </button>
+    }
   </div>
 
   <ul class="nav nav-pills mb-4 gap-2 p-1 bg-mist rounded-pill d-inline-flex shadow-sm">
     <li class="nav-item">
-      <button class="nav-link active rounded-pill px-4" data-bs-toggle="tab" data-bs-target="#usuarios-tab">
+      <button class="nav-link rounded-pill px-4" [class.active]="tabActivo === 'usuarios'" (click)="tabActivo = 'usuarios'">
         <i class="bi bi-people me-2"></i> Lista de Usuarios
       </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link rounded-pill px-4" data-bs-toggle="tab" data-bs-target="#roles-tab">
+      <button class="nav-link rounded-pill px-4" [class.active]="tabActivo === 'roles'" (click)="tabActivo = 'roles'">
         <i class="bi bi-shield-lock me-2"></i> Roles y Permisos
       </button>
     </li>
   </ul>
 
-  <div class="tab-content">
-    <div class="tab-pane fade show active" id="usuarios-tab">
-      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-        <div class="table-responsive">
-          <table class="table align-middle mb-0">
-            <thead class="bg-azure-light text-muted small text-uppercase">
-              <tr>
-                <th class="ps-4 py-3">Personal</th>
-                <th class="py-3">Email</th>
-                <th class="py-3">Rol</th>
-                <th class="py-3 text-center">Estado</th>
-                <th class="py-3 text-end pe-4">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (user of listaUsuarios; track user.id) {
-              <tr class="border-bottom-mist">
-                <td class="ps-4">
-                  <div class="fw-bold text-charcoal">{{ user.nombre }} {{ user.apellidoPaterno }}</div>
-                  <small class="text-muted">ID: #{{ user.id | number:'3.0' }}</small>
-                </td>
-                <td class="text-secondary">{{ user.email }}</td>
-                <td><span class="badge-rol">{{ user.rolNombre }}</span></td>
-                <td class="text-center">
-                  <div class="form-check form-switch d-flex justify-content-center">
-                    <input class="form-check-input custom-switch" type="checkbox" 
-                           [checked]="user.estado" (change)="toggleEstado(user)">
-                  </div>
-                </td>
-                <td class="text-end pe-4">
-                  <button class="btn btn-action-teal me-2" (click)="abrirModalEditar(user)">
-                    <i class="bi bi-pencil-fill"></i>
-                  </button>
-                </td>
-              </tr>
-              } @empty {
-                <tr>
-                  <td colspan="5" class="text-center py-5 text-muted">No hay usuarios registrados.</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-pane fade" id="roles-tab">
-      <div class="row g-3">
-        @for (rol of listaRoles; track rol.id) {
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm rounded-4 p-4 card-role h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <span class="badge-rol-dark">{{ rol.nombre }}</span>
-              <button class="btn-permisos" (click)="abrirPermisos(rol)" title="Editar Permisos">
-                <i class="bi bi-gear-fill"></i>
+  <!-- TAB USUARIOS -->
+  @if (tabActivo === 'usuarios') {
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="bg-azure-light text-muted small text-uppercase">
+          <tr>
+            <th class="ps-4 py-3">Personal</th>
+            <th class="py-3">Email</th>
+            <th class="py-3">Rol</th>
+            <th class="py-3 text-center">Estado</th>
+            <th class="py-3 text-end pe-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of listaUsuarios; track user.id) {
+          <tr class="border-bottom-mist">
+            <td class="ps-4">
+              <div class="fw-bold text-charcoal">{{ user.nombre }} {{ user.apellidoPaterno }}{{ user.apellidoMaterno ? ' ' + user.apellidoMaterno : '' }}</div>
+              <small class="text-muted">ID: #{{ user.id | number:'3.0' }}</small>
+            </td>
+            <td class="text-secondary">{{ user.email }}</td>
+            <td><span class="badge-rol">{{ user.rol }}</span></td>
+            <td class="text-center">
+              <div class="form-check form-switch d-flex justify-content-center">
+                <input class="form-check-input custom-switch" type="checkbox"
+                       [checked]="user.estado" (change)="toggleEstado(user)">
+              </div>
+            </td>
+            <td class="text-end pe-4">
+              <button class="btn btn-action-teal" (click)="abrirModalEditar(user)">
+                <i class="bi bi-pencil-fill"></i>
               </button>
-            </div>
-            <h6 class="fw-bold text-charcoal">Descripción</h6>
-            <p class="small text-secondary mb-3">{{ rol.descripcion }}</p>
-            <div class="mt-auto pt-3 border-top-mist">
-              <span class="small fw-bold text-jungle"><i class="bi bi-check2-circle"></i> Rol Operativo</span>
-            </div>
-          </div>
-        </div>
-        }
-      </div>
+            </td>
+          </tr>
+          } @empty {
+            <tr><td colspan="5" class="text-center py-5 text-muted">No hay usuarios registrados.</td></tr>
+          }
+        </tbody>
+      </table>
     </div>
   </div>
+  }
+
+  <!-- TAB ROLES -->
+  @if (tabActivo === 'roles') {
+  <div class="row g-3">
+    @for (rol of listaRoles; track rol.id) {
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 card-role h-100">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <span class="badge-rol-dark">{{ rol.nombre }}</span>
+          <button class="btn-permisos" (click)="abrirPermisos(rol)" title="Editar Permisos">
+            <i class="bi bi-gear-fill"></i>
+          </button>
+        </div>
+        <h6 class="fw-bold text-charcoal">Descripción</h6>
+        <p class="small text-secondary mb-3">{{ rol.descripcion }}</p>
+        <div class="mt-auto pt-3 border-top-mist">
+          <span class="small fw-bold text-jungle"><i class="bi bi-check2-circle"></i> Rol Operativo</span>
+        </div>
+      </div>
+    </div>
+    } @empty {
+      <div class="col-12 text-center py-5 text-muted">No hay roles registrados.</div>
+    }
+  </div>
+  }
 </div>
 
 <!-- MODAL CREAR / EDITAR USUARIO -->
@@ -103,27 +109,35 @@
 <div class="modal-custom">
   <div class="card border-0 shadow-lg rounded-4 p-4" style="width:480px; max-width:95vw;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h5 class="fw-bold mb-0 text-charcoal">
-        {{ modoEdicion ? 'Editar usuario' : 'Nuevo usuario' }}
-      </h5>
+      <h5 class="fw-bold mb-0 text-charcoal">{{ modoEdicion ? 'Editar usuario' : 'Nuevo usuario' }}</h5>
       <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarModalUsuario()">✕</button>
     </div>
-    
     <div class="row g-3">
       <div class="col-6">
-        <label class="form-label small fw-bold text-muted">NOMBRE</label>
+        <label class="form-label small fw-bold text-muted">NOMBRE *</label>
         <input type="text" class="form-control" [(ngModel)]="form.nombre" placeholder="Nombre">
       </div>
       <div class="col-6">
-        <label class="form-label small fw-bold text-muted">APELLIDO PATERNO</label>
+        <label class="form-label small fw-bold text-muted">APELLIDO PATERNO *</label>
         <input type="text" class="form-control" [(ngModel)]="form.apellidoPaterno" placeholder="Apellido paterno">
       </div>
-      <div class="col-12">
-        <label class="form-label small fw-bold text-muted">EMAIL INSTITUCIONAL</label>
+      <div class="col-6">
+        <label class="form-label small fw-bold text-muted">APELLIDO MATERNO</label>
+        <input type="text" class="form-control" [(ngModel)]="form.apellidoMaterno" placeholder="Apellido materno">
+      </div>
+      <div class="col-6">
+        <label class="form-label small fw-bold text-muted">EMAIL INSTITUCIONAL *</label>
         <input type="email" class="form-control" [(ngModel)]="form.email" placeholder="correo@pharmman.com">
       </div>
+      @if (!modoEdicion) {
       <div class="col-12">
-        <label class="form-label small fw-bold text-muted">ROL ASIGNADO</label>
+        <label class="form-label small fw-bold text-muted">DNI *</label>
+        <input type="text" class="form-control" [(ngModel)]="form.dni" placeholder="Ej: 12345678" maxlength="8" pattern="[0-9]*">
+        <small class="text-muted">El DNI será la contraseña inicial del usuario (8 dígitos numéricos).</small>
+      </div>
+      }
+      <div class="col-12">
+        <label class="form-label small fw-bold text-muted">ROL ASIGNADO *</label>
         <select class="form-select" [(ngModel)]="form.rolId">
           <option [ngValue]="null" disabled>Selecciona un rol</option>
           @for (rol of listaRoles; track rol.id) {
@@ -131,8 +145,14 @@
           }
         </select>
       </div>
+      @if (errorForm) {
+      <div class="col-12">
+        <div class="alert alert-danger py-2 mb-0 small">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorForm }}
+        </div>
+      </div>
+      }
     </div>
-
     <div class="d-flex gap-2 justify-content-end mt-4">
       <button class="btn btn-light rounded-pill px-4" (click)="cerrarModalUsuario()">Cancelar</button>
       <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="guardar()">
@@ -147,12 +167,11 @@
 @if (mostrarModalRol) {
 <div class="modal-backdrop-custom" (click)="cerrarModalRol()"></div>
 <div class="modal-custom">
-  <div class="card border-0 shadow-lg rounded-4 p-4" style="width: 450px; max-width: 95vw;">
+  <div class="card border-0 shadow-lg rounded-4 p-4" style="width:450px; max-width:95vw;">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0 text-charcoal">Crear Nuevo Rol</h5>
       <button class="btn btn-sm btn-light rounded-circle" (click)="cerrarModalRol()">✕</button>
     </div>
-
     <div class="row g-3">
       <div class="col-12">
         <label class="form-label small fw-bold text-muted">NOMBRE DEL ROL</label>
@@ -160,16 +179,13 @@
       </div>
       <div class="col-12">
         <label class="form-label small fw-bold text-muted">DESCRIPCIÓN</label>
-        <textarea class="form-control" [(ngModel)]="formRol.descripcion" rows="3" 
+        <textarea class="form-control" [(ngModel)]="formRol.descripcion" rows="3"
                   placeholder="Describa brevemente las responsabilidades..."></textarea>
       </div>
     </div>
-
     <div class="d-flex gap-2 justify-content-end mt-4">
       <button class="btn btn-light rounded-pill px-4" (click)="cerrarModalRol()">Cancelar</button>
-      <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="guardarRol()">
-        Crear Rol
-      </button>
+      <button class="btn btn-jungle rounded-pill px-4 shadow-sm" (click)="guardarRol()">Crear Rol</button>
     </div>
   </div>
 </div>
@@ -185,8 +201,7 @@
         <h5 class="fw-bold mb-1">Permisos — {{ rolSeleccionado?.nombre }}</h5>
         <small class="text-muted">Los cambios se guardan automáticamente</small>
       </div>
-      <button class="btn btn-sm btn-outline-secondary rounded-circle"
-        (click)="cerrarModalPermisos()">✕</button>
+      <button class="btn btn-sm btn-outline-secondary rounded-circle" (click)="cerrarModalPermisos()">✕</button>
     </div>
     <div class="table-responsive">
       <table class="table align-middle mb-0">
@@ -204,15 +219,13 @@
             <td class="text-center">
               <div class="form-check form-switch d-flex justify-content-center">
                 <input class="form-check-input" type="checkbox"
-                  [(ngModel)]="permiso.lectura"
-                  (change)="guardarPermiso(permiso)">
+                  [(ngModel)]="permiso.lectura" (change)="guardarPermiso(permiso)">
               </div>
             </td>
             <td class="text-center">
               <div class="form-check form-switch d-flex justify-content-center">
                 <input class="form-check-input" type="checkbox"
-                  [(ngModel)]="permiso.escritura"
-                  (change)="guardarPermiso(permiso)">
+                  [(ngModel)]="permiso.escritura" (change)="guardarPermiso(permiso)">
               </div>
             </td>
           </tr>
@@ -221,8 +234,7 @@
       </table>
     </div>
     <div class="d-flex justify-content-end mt-4">
-      <button class="btn btn-primary rounded-pill px-4"
-        (click)="cerrarModalPermisos()">Listo</button>
+      <button class="btn btn-jungle rounded-pill px-4" (click)="cerrarModalPermisos()">Listo</button>
     </div>
   </div>
 </div>

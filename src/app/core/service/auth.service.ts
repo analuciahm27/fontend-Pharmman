@@ -11,6 +11,11 @@ export class AuthService {
   private usuarioSubject = new BehaviorSubject<any>(null);
   public usuario$ = this.usuarioSubject.asObservable();
 
+  // Control de inactividad (30 minutos = 1800000 ms)
+  private readonly INACTIVITY_TIMEOUT = 30 * 60 * 1000;
+  private inactivityTimer: any = null;
+  private inactivityInitialized = false;
+
   constructor(private http: HttpClient, private router: Router) {
     this.verificarSesion().subscribe();
   }
@@ -18,7 +23,17 @@ export class AuthService {
   // Método vital: consulta el endpoint /me que creamos en Spring Boot
   verificarSesion(): Observable<any> {
     return this.http.get(`${this.url}/auth/me`).pipe(
-      tap(user => this.usuarioSubject.next(user)),
+      tap(user => {
+        this.usuarioSubject.next(user);
+        if (user) {
+          // Solo iniciar el tracker de inactividad si hay usuario y no se ha iniciado
+          if (!this.inactivityInitialized) {
+            this.initInactivityTracker();
+            this.inactivityInitialized = true;
+          }
+          this.resetInactivityTimer();
+        }
+      }),
       catchError(() => {
         this.usuarioSubject.next(null);
         return of(null);
@@ -29,8 +44,15 @@ export class AuthService {
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.url}/auth/login`, { email, password }).pipe(
       tap((resp: any) => {
-        // Actualizamos el estado en memoria. Ya no hay sessionStorage.setItem
         this.usuarioSubject.next(resp);
+        if (!this.inactivityInitialized) {
+          this.initInactivityTracker();
+          this.inactivityInitialized = true;
+        }
+        this.resetInactivityTimer();
+        if (resp.mustChangePassword) {
+          this.router.navigate(['/update-password']);
+        }
       })
     );
   }
@@ -38,11 +60,55 @@ export class AuthService {
   logout(): Observable<any> {
     return this.http.post(`${this.url}/auth/logout`, {}).pipe(
       tap(() => {
-        // Limpiamos la memoria y redirigimos
+        this.clearInactivityTimer();
         this.usuarioSubject.next(null);
         this.router.navigate(['/login']);
       })
     );
+  }
+
+  // ==================== CONTROL DE INACTIVIDAD ====================
+
+  private initInactivityTracker(): void {
+    // Eventos que reinician el timer
+    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+      document.addEventListener(event, () => this.resetInactivityTimer(), true);
+    });
+  }
+
+  private resetInactivityTimer(): void {
+    this.clearInactivityTimer();
+    if (this.isLoggedIn()) {
+      this.inactivityTimer = setTimeout(() => {
+        this.logoutByInactivity();
+      }, this.INACTIVITY_TIMEOUT);
+    }
+  }
+
+  private clearInactivityTimer(): void {
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = null;
+    }
+  }
+
+  private logoutByInactivity(): void {
+    this.http.post(`${this.url}/auth/logout`, {}).subscribe({
+      next: () => {
+        this.clearInactivityTimer();
+        this.usuarioSubject.next(null);
+        this.router.navigate(['/login'], { 
+          queryParams: { reason: 'inactivity' } 
+        });
+      },
+      error: () => {
+        this.clearInactivityTimer();
+        this.usuarioSubject.next(null);
+        this.router.navigate(['/login'], { 
+          queryParams: { reason: 'inactivity' } 
+        });
+      }
+    });
   }
 
   // Métodos de utilidad usando el valor actual del Subject

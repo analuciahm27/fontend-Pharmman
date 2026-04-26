@@ -19,17 +19,19 @@ export class UsuariosComponent implements OnInit {
   mostrarModalUsuario = false;
   modoEdicion = false;
   usuarioSeleccionado: any = null;
+  tabActivo = 'usuarios';
+  errorForm = '';
 
   form: {
     nombre: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
     email: string;
-    password: string;
+    dni: string;
     rolId: number | null;
   } = {
     nombre: '', apellidoPaterno: '', apellidoMaterno: '',
-    email: '', password: '', rolId: null
+    email: '', dni: '', rolId: null
   };
 
   // --- ROLES ---
@@ -66,20 +68,22 @@ export class UsuariosComponent implements OnInit {
 
   abrirModalCrear(): void {
     this.modoEdicion = false;
-    this.form = { nombre: '', apellidoPaterno: '', apellidoMaterno: '', email: '', password: '', rolId: null };
+    this.errorForm = '';
+    this.form = { nombre: '', apellidoPaterno: '', apellidoMaterno: '', email: '', dni: '', rolId: null };
     this.mostrarModalUsuario = true;
   }
 
   abrirModalEditar(user: any): void {
     this.modoEdicion = true;
+    this.errorForm = '';
     this.usuarioSeleccionado = user;
     const rolEncontrado = this.listaRoles.find(r => r.nombre === user.rol);
     this.form = {
       nombre: user.nombre,
       apellidoPaterno: user.apellidoPaterno,
-      apellidoMaterno: user.apellidoMaterno,
+      apellidoMaterno: user.apellidoMaterno || '',
       email: user.email,
-      password: '',
+      dni: user.dni || '',
       rolId: rolEncontrado ? rolEncontrado.id : null
     };
     this.mostrarModalUsuario = true;
@@ -91,15 +95,54 @@ export class UsuariosComponent implements OnInit {
   }
 
   guardar(): void {
+    // Validaciones
+    if (!this.form.nombre.trim()) {
+      this.errorForm = 'El nombre es obligatorio';
+      return;
+    }
+    if (!this.form.apellidoPaterno.trim()) {
+      this.errorForm = 'El apellido paterno es obligatorio';
+      return;
+    }
+    if (!this.form.email.trim()) {
+      this.errorForm = 'El email es obligatorio';
+      return;
+    }
+    if (!this.form.rolId) {
+      this.errorForm = 'Debe seleccionar un rol';
+      return;
+    }
+
+    // Validación DNI (solo en modo creación)
+    if (!this.modoEdicion) {
+      if (!this.form.dni.trim()) {
+        this.errorForm = 'El DNI es obligatorio';
+        return;
+      }
+      if (!/^\d{8}$/.test(this.form.dni)) {
+        this.errorForm = 'El DNI debe tener exactamente 8 dígitos numéricos';
+        return;
+      }
+    }
+
+    // Validación email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.form.email)) {
+      this.errorForm = 'El email no tiene un formato válido';
+      return;
+    }
+
+    this.errorForm = '';
+
     if (this.modoEdicion) {
       this.usuarioService.editar(this.usuarioSeleccionado.id, this.form).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
-        error: (err) => console.error(err)
+        error: (err) => this.errorForm = err.error?.mensaje || 'Error al editar usuario'
       });
     } else {
       this.usuarioService.crear(this.form).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
-        error: (err) => console.error(err)
+        error: (err) => this.errorForm = err.error?.mensaje || 'Error al crear usuario'
       });
     }
   }
