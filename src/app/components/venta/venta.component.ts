@@ -125,6 +125,12 @@ export class VentasComponent implements OnInit {
     });
   }
 
+  limpiarFiltros(): void {
+    this.filtroDesde = '';
+    this.filtroHasta = '';
+    this.cargarHistorial();
+  }
+
   verDetalle(venta: any): void { this.ventaDetalle = venta; }
   cerrarDetalle(): void { this.ventaDetalle = null; }
 

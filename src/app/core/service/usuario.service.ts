@@ -24,6 +24,10 @@ export class UsuarioService {
   }
 
   editar(id: number, data: any): Observable<any> {
-  return this.http.put(`${this.URL}/${id}`, data, { withCredentials: true });
-}
+    return this.http.put(`${this.URL}/${id}`, data);
+  }
+
+  cambiarPassword(data: { passwordActual: string; passwordNueva: string }): Observable<void> {
+    return this.http.patch<void>(`${this.URL}/cambiar-password`, data);
+  }
 }

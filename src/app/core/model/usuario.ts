@@ -1,9 +1,11 @@
 export interface Usuario{
     id?: number;
     nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno?: string;
     email: string;
-    passwordHash: string;
+    dni: string;
     rol: string;
-    createdAt: Date;
-    estado: boolean
+    estado: boolean;
+    mustChangePassword?: boolean;
 }

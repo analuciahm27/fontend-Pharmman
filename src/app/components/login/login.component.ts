@@ -37,10 +37,8 @@ export class LoginComponent {
 
   this.auth.login(email, password).subscribe({
     next: (resp) => {
-      // redirige según rol
-      resp.rol === 'ADMIN'
-        ? this.router.navigate(['/dashboard'])
-        : this.router.navigate(['/ventas/registro']);
+      if (resp.mustChangePassword) return; // AuthService ya redirige a /update-password
+      this.router.navigate(['/dashboard']);
     },
     error: () => {
       this.errorMsg = 'Credenciales incorrectas o usuario inactivo.';
