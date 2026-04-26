@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
+import { BehaviorSubject, Observable, tap, catchError, of, map } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({ providedIn: 'root' })
@@ -20,26 +20,16 @@ export class AuthService {
     this.verificarSesion().subscribe();
   }
 
-  // Método vital: consulta el endpoint /me que creamos en Spring Boot
-  verificarSesion(): Observable<any> {
-    return this.http.get(`${this.url}/auth/me`).pipe(
-      tap(user => {
-        this.usuarioSubject.next(user);
-        if (user) {
-          // Solo iniciar el tracker de inactividad si hay usuario y no se ha iniciado
-          if (!this.inactivityInitialized) {
-            this.initInactivityTracker();
-            this.inactivityInitialized = true;
-          }
-          this.resetInactivityTimer();
-        }
-      }),
-      catchError(() => {
-        this.usuarioSubject.next(null);
-        return of(null);
-      })
-    );
-  }
+verificarSesion(): Observable<any> {
+  return this.http.get(`${this.url}/auth/me`).pipe(
+    tap(user => this.usuarioSubject.next(user)),
+    map(user => user), 
+    catchError(() => {
+      this.usuarioSubject.next(null);
+      return of(null);
+    })
+  );
+}
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.url}/auth/login`, { email, password }).pipe(
