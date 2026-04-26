@@ -222,6 +222,16 @@ export class UsuariosComponent implements OnInit {
     this.rolSeleccionado = null;
   }
 
+  onCambioEscritura(permiso: any): void {
+    if (permiso.escritura) permiso.lectura = true;  // escritura implica lectura
+    this.guardarPermiso(permiso);
+  }
+
+  onCambioLectura(permiso: any): void {
+    if (!permiso.lectura) permiso.escritura = false; // sin lectura, sin escritura
+    this.guardarPermiso(permiso);
+  }
+
   guardarPermiso(permiso: any): void {
     this.rolService.actualizarPermiso({
       rolId: this.rolSeleccionado.id,
