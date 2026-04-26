@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../core/service/usuario.service';
 import { RolService } from '../../core/service/rol.service';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -21,6 +22,8 @@ export class UsuariosComponent implements OnInit {
   usuarioSeleccionado: any = null;
   tabActivo = 'usuarios';
   errorForm = '';
+  puedeEscribir = false;
+  sinPermiso = false;
 
   form: {
     nombre: string;
@@ -48,10 +51,17 @@ export class UsuariosComponent implements OnInit {
   constructor(
     private router: Router,
     private usuarioService: UsuarioService,
-    private rolService: RolService
+    private rolService: RolService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    const esAdmin = this.authService.getRol() === 'ADMIN';
+    this.puedeEscribir = esAdmin || this.authService.tienePermiso('USUARIOS_escritura');
+    if (!this.authService.tienePermiso('USUARIOS_lectura') && !esAdmin) {
+      this.sinPermiso = true;
+      return;
+    }
     this.cargarUsuarios();
     this.cargarRoles();
     this.cargarModulos();
@@ -210,6 +220,16 @@ export class UsuariosComponent implements OnInit {
   cerrarModalPermisos(): void {
     this.mostrarModalPermisos = false;
     this.rolSeleccionado = null;
+  }
+
+  onCambioEscritura(permiso: any): void {
+    if (permiso.escritura) permiso.lectura = true;  // escritura implica lectura
+    this.guardarPermiso(permiso);
+  }
+
+  onCambioLectura(permiso: any): void {
+    if (!permiso.lectura) permiso.escritura = false; // sin lectura, sin escritura
+    this.guardarPermiso(permiso);
   }
 
   guardarPermiso(permiso: any): void {

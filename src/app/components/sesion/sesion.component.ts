@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SesionService } from '../../core/service/sesion.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
   selector: 'app-sesion',
@@ -18,10 +19,18 @@ export class SesionesComponent implements OnInit {
   filtroUsuario = '';
   filtroDesde = '';
   filtroHasta = '';
+  sinPermiso = false;
 
-  constructor(private sesionService: SesionService, private router: Router) {}
+  constructor(private sesionService: SesionService, private router: Router, private authService: AuthService) {}
 
-  ngOnInit(): void { this.cargarSesiones(); }
+  ngOnInit(): void {
+    const esAdmin = this.authService.getRol() === 'ADMIN';
+    if (!this.authService.tienePermiso('Sesiones_lectura') && !esAdmin) {
+      this.sinPermiso = true;
+      return;
+    }
+    this.cargarSesiones();
+  }
 
   cargarSesiones(): void {
     this.sesionService.listar().subscribe({

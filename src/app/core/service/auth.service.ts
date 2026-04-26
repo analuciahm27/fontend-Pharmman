@@ -121,8 +121,13 @@ verificarSesion(): Observable<any> {
     return this.usuarioSubject.value?.rol ?? null;
   }
 
+  // permiso: 'MODULO_lectura' o 'MODULO_escritura'
   tienePermiso(permiso: string): boolean {
-    return this.usuarioSubject.value?.permisos?.includes(permiso) ?? false;
+    const permisos: any[] = this.usuarioSubject.value?.permisos ?? [];
+    const [modulo, tipo] = permiso.split('_');
+    return permisos.some(p =>
+      p.modulo?.toUpperCase() === modulo?.toUpperCase() && p[tipo] === true
+    );
   }
 
   isLoggedIn(): boolean {
