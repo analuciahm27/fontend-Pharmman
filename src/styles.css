@@ -165,3 +165,134 @@ tbody tr:nth-child(10) { animation-delay: 0.32s; }
 .btn-back:hover {
   transform: translateX(-3px) !important;
 }
+
+/* ============================================================
+   RESPONSIVO GLOBAL — PHARMMAN
+   ============================================================ */
+
+/* ===== VIEWPORT META (asegurar escala correcta) ===== */
+html { scroll-behavior: smooth; }
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+@media (max-width: 768px) {
+  .container-fluid.p-4 { padding: 1rem !important; }
+}
+
+/* ===== HEADER DE PÁGINA (título + botón) ===== */
+@media (max-width: 576px) {
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.75rem;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 > .d-flex.gap-2 {
+    width: 100%;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 .btn {
+    flex: 1;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ===== TABLAS ===== */
+.table-responsive { -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 768px) {
+  .table th, .table td { font-size: 0.8rem; padding: 0.5rem 0.6rem; }
+  .table th.ps-4, .table td.ps-4 { padding-left: 0.75rem !important; }
+  .table th.pe-4, .table td.pe-4 { padding-right: 0.75rem !important; }
+}
+
+/* ===== MODALES ===== */
+@media (max-width: 576px) {
+  .modal-custom {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .modal-custom > .card,
+  .modal-custom .card {
+    border-radius: 20px 20px 0 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Animación desde abajo en móvil */
+  .modal-custom {
+    animation: slideUpMobile 0.3s ease both !important;
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Campos col-6 pasan a col-12 en móvil */
+  .modal-custom .col-6 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ===== VENTAS — layout de dos columnas ===== */
+@media (max-width: 991px) {
+  .col-lg-8, .col-lg-4 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ===== NAV PILLS ===== */
+@media (max-width: 576px) {
+  .nav-pills.d-inline-flex {
+    display: flex !important;
+    width: 100%;
+  }
+  .nav-pills .nav-item { flex: 1; }
+  .nav-pills .nav-link { text-align: center; padding: 0.5rem 0.5rem; font-size: 0.82rem; }
+}
+
+/* ===== FILTROS DE FECHA ===== */
+@media (max-width: 768px) {
+  .row.g-3.align-items-end .col-md-3,
+  .row.g-3.align-items-end .col-md-4,
+  .row.g-3.align-items-end .col-md-2 {
+    width: 50% !important;
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .row.g-3.align-items-end .col-md-3,
+  .row.g-3.align-items-end .col-md-4,
+  .row.g-3.align-items-end .col-md-2 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ===== CARDS DE ROLES ===== */
+@media (max-width: 768px) {
+  .col-md-4 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+}
+
+/* ===== LOGIN ===== */
+@media (max-width: 480px) {
+  .card.p-5 { padding: 1.5rem !important; }
+}
+
+/* ===== TOPBAR ===== */
+@media (max-width: 576px) {
+  .topbar .navbar-brand { font-size: 0.95rem; }
+}
