@@ -1,1 +1,167 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   PHARMMAN — ESTILOS GLOBALES Y ANIMACIONES
+   ============================================================ */
+
+/* ===== VIEW TRANSITIONS (cambio de página) ===== */
+::view-transition-old(root) {
+  animation: 280ms ease both fadeSlideOut;
+}
+::view-transition-new(root) {
+  animation: 320ms ease both fadeSlideIn;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-10px); }
+}
+
+/* ===== ANIMACIONES REUTILIZABLES ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Clases utilitarias de animación */
+.anim-fade-up    { animation: fadeUp 0.4s ease both; }
+.anim-fade-in    { animation: fadeIn 0.35s ease both; }
+.anim-scale-in   { animation: scaleIn 0.3s ease both; }
+.anim-slide-right { animation: slideInRight 0.35s ease both; }
+
+/* Delays escalonados */
+.anim-delay-1 { animation-delay: 0.05s; }
+.anim-delay-2 { animation-delay: 0.1s; }
+.anim-delay-3 { animation-delay: 0.15s; }
+.anim-delay-4 { animation-delay: 0.2s; }
+.anim-delay-5 { animation-delay: 0.25s; }
+
+/* ===== BOTONES GLOBALES ===== */
+.btn, button {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease !important;
+}
+
+.btn:hover:not(:disabled), button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn:active:not(:disabled), button:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ===== CARDS GLOBALES ===== */
+.card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* ===== INPUTS GLOBALES ===== */
+.form-control, .form-select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(77, 147, 127, 0.2) !important;
+  border-color: #4d937f !important;
+}
+
+/* ===== MODALES ===== */
+.modal-backdrop-custom {
+  animation: fadeIn 0.2s ease both;
+}
+
+.modal-custom > * {
+  animation: scaleIn 0.25s ease both;
+}
+
+/* ===== TABLAS ===== */
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* ===== BADGES Y SWITCHES ===== */
+.form-check-input {
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+  cursor: pointer;
+}
+
+/* ===== ALERTS ===== */
+.alert {
+  animation: fadeUp 0.3s ease both;
+}
+
+/* ===== FILAS DE TABLA ANIMADAS ===== */
+tbody tr {
+  animation: fadeUp 0.3s ease both;
+}
+tbody tr:nth-child(1)  { animation-delay: 0.05s; }
+tbody tr:nth-child(2)  { animation-delay: 0.08s; }
+tbody tr:nth-child(3)  { animation-delay: 0.11s; }
+tbody tr:nth-child(4)  { animation-delay: 0.14s; }
+tbody tr:nth-child(5)  { animation-delay: 0.17s; }
+tbody tr:nth-child(6)  { animation-delay: 0.20s; }
+tbody tr:nth-child(7)  { animation-delay: 0.23s; }
+tbody tr:nth-child(8)  { animation-delay: 0.26s; }
+tbody tr:nth-child(9)  { animation-delay: 0.29s; }
+tbody tr:nth-child(10) { animation-delay: 0.32s; }
+
+/* ===== BOTONES DE ACCIÓN EN TABLAS ===== */
+.btn-action-teal {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease !important;
+}
+.btn-action-teal:hover {
+  transform: scale(1.15) !important;
+  box-shadow: 0 4px 12px rgba(77,147,127,0.35) !important;
+}
+
+/* ===== MODALES CON ANIMACIÓN ===== */
+.modal-custom > .card {
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ===== NAV PILLS ANIMADOS ===== */
+.nav-pills .nav-link {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease !important;
+}
+.nav-pills .nav-link:hover {
+  transform: translateY(-1px);
+}
+
+/* ===== BADGES ===== */
+.badge, [class*="badge-"] {
+  transition: transform 0.15s ease !important;
+}
+
+/* ===== INPUT GROUP FOCUS ===== */
+.input-group-pharman {
+  transition: box-shadow 0.2s ease;
+}
+.input-group-pharman:focus-within {
+  box-shadow: 0 0 0 3px rgba(77,147,127,0.2);
+  border-radius: 8px;
+}
+
+/* ===== BTN-BACK ===== */
+.btn-back {
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.btn-back:hover {
+  transform: translateX(-3px) !important;
+}
