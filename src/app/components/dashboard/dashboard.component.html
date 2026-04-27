@@ -1,6 +1,12 @@
 <div class="app-layout d-flex">
+
+  <!-- OVERLAY móvil para cerrar sidebar -->
+  @if (sidebarAbierto) {
+    <div class="sidebar-overlay" (click)="cerrarSidebar()"></div>
+  }
+
   <!-- SIDEBAR -->
-  <aside class="sidebar shadow-lg">
+  <aside class="sidebar shadow-lg" [class.sidebar-open]="sidebarAbierto">
     <div class="d-flex align-items-center gap-3 mb-5 mt-2">
       <img src="assets/logo-pharmman.jpeg" alt="Logo PharmMan"
            style="width:42px; height:42px; object-fit:contain; border-radius:50%;">
@@ -60,91 +66,96 @@
 
   <!-- CONTENIDO -->
   <div class="content-area flex-grow-1">
-    <nav class="navbar topbar navbar-expand shadow-sm px-4 py-3">
+    <nav class="navbar topbar navbar-expand shadow-sm px-3 py-3">
       <div class="container-fluid">
+        <!-- Botón hamburguesa (solo móvil) -->
+        <button class="btn-hamburger me-3 d-lg-none" (click)="toggleSidebar()" aria-label="Abrir menú">
+          <i class="bi bi-list"></i>
+        </button>
         <span class="navbar-brand fw-bold mb-0" style="color:#374e62;">
           {{ saludo() }}, {{ usuario?.nombre }}
         </span>
-        <div class="d-flex align-items-center gap-3">
-          <span class="text-muted small">{{ fecha | date:'EEEE, d MMMM yyyy' : '' : 'es' }}</span>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <span class="text-muted small d-none d-md-inline">{{ fecha | date:'d MMM yyyy' }}</span>
           <span class="badge user-badge rounded-pill px-3 py-2">{{ usuario?.rol }}</span>
         </div>
       </div>
     </nav>
 
-    <main class="container-fluid p-4">
+    <main class="container-fluid p-3 p-md-4">
 
       <!-- HERO -->
-      <div class="hero-card rounded-4 shadow-sm mb-4 p-4 d-flex align-items-center justify-content-between">
+      <div class="hero-card rounded-4 shadow-sm mb-4 p-3 p-md-4 d-flex align-items-center justify-content-between">
         <div>
-          <h2 class="fw-bold mb-1 text-white">{{ saludo() }}, {{ usuario?.nombre }} 👋</h2>
-          <p class="mb-0 text-white opacity-75">
-            {{ esAdmin ? 'Tienes acceso completo al sistema. Gestiona usuarios, productos, ventas e ingresos.' : 'Accede a los módulos habilitados para tu rol.' }}
+          <h2 class="fw-bold mb-1 text-white fs-4 fs-md-2">{{ saludo() }}, {{ usuario?.nombre }} 👋</h2>
+          <p class="mb-0 text-white opacity-75 small">
+            {{ esAdmin ? 'Tienes acceso completo al sistema.' : 'Accede a los módulos habilitados para tu rol.' }}
           </p>
         </div>
         <img src="assets/logo-pharmman.jpeg" alt="PharmMan"
-             style="width:80px;height:80px;object-fit:contain;border-radius:50%;opacity:0.9;border:3px solid rgba(255,255,255,0.3)">
+             class="d-none d-sm-block"
+             style="width:70px;height:70px;object-fit:contain;border-radius:50%;opacity:0.9;border:3px solid rgba(255,255,255,0.3)">
       </div>
 
       <!-- MÓDULOS -->
       <div class="mb-3 d-flex justify-content-between align-items-center">
         <h5 class="fw-bold mb-0" style="color:#374e62;">Accesos rápidos</h5>
-        <small class="text-muted">Selecciona un módulo para comenzar</small>
+        <small class="text-muted d-none d-sm-inline">Selecciona un módulo para comenzar</small>
       </div>
 
       <div class="row g-3">
         @if (tieneAcceso('USUARIOS')) {
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="module-card rounded-4 shadow-sm p-4 h-100" role="button" (click)="irA('/usuarios')" aria-label="Ir a Usuarios">
-            <div class="module-icon-wrap bg-blue mb-3">
+        <div class="col-6 col-md-6 col-lg-4">
+          <div class="module-card rounded-4 shadow-sm p-3 p-md-4 h-100" role="button" (click)="irA('/usuarios')" aria-label="Ir a Usuarios">
+            <div class="module-icon-wrap bg-blue mb-2 mb-md-3">
               <i class="bi bi-people-fill"></i>
             </div>
             <h6 class="fw-bold mb-1">Usuarios</h6>
-            <p class="text-muted small mb-0">Gestiona el personal y sus roles de acceso al sistema.</p>
+            <p class="text-muted small mb-0 d-none d-md-block">Gestiona el personal y sus roles de acceso.</p>
           </div>
         </div>
         }
         @if (tieneAcceso('Productos')) {
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="module-card rounded-4 shadow-sm p-4 h-100" role="button" (click)="irA('/productos')" aria-label="Ir a Productos">
-            <div class="module-icon-wrap bg-teal mb-3">
+        <div class="col-6 col-md-6 col-lg-4">
+          <div class="module-card rounded-4 shadow-sm p-3 p-md-4 h-100" role="button" (click)="irA('/productos')" aria-label="Ir a Productos">
+            <div class="module-icon-wrap bg-teal mb-2 mb-md-3">
               <i class="bi bi-capsule"></i>
             </div>
             <h6 class="fw-bold mb-1">Productos</h6>
-            <p class="text-muted small mb-0">Administra el catálogo de medicamentos y su inventario.</p>
+            <p class="text-muted small mb-0 d-none d-md-block">Administra el catálogo e inventario.</p>
           </div>
         </div>
         }
         @if (tieneAcceso('Ventas')) {
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="module-card rounded-4 shadow-sm p-4 h-100" role="button" (click)="irA('/ventas')" aria-label="Ir a Ventas">
-            <div class="module-icon-wrap bg-green mb-3">
+        <div class="col-6 col-md-6 col-lg-4">
+          <div class="module-card rounded-4 shadow-sm p-3 p-md-4 h-100" role="button" (click)="irA('/ventas')" aria-label="Ir a Ventas">
+            <div class="module-icon-wrap bg-green mb-2 mb-md-3">
               <i class="bi bi-cart-fill"></i>
             </div>
             <h6 class="fw-bold mb-1">Ventas</h6>
-            <p class="text-muted small mb-0">Registra ventas y consulta el historial de transacciones.</p>
+            <p class="text-muted small mb-0 d-none d-md-block">Registra ventas y consulta el historial.</p>
           </div>
         </div>
         }
         @if (tieneAcceso('Ingresos')) {
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="module-card rounded-4 shadow-sm p-4 h-100" role="button" (click)="irA('/ingresos')" aria-label="Ir a Ingresos">
-            <div class="module-icon-wrap bg-orange mb-3">
+        <div class="col-6 col-md-6 col-lg-4">
+          <div class="module-card rounded-4 shadow-sm p-3 p-md-4 h-100" role="button" (click)="irA('/ingresos')" aria-label="Ir a Ingresos">
+            <div class="module-icon-wrap bg-orange mb-2 mb-md-3">
               <i class="bi bi-box-arrow-in-down"></i>
             </div>
             <h6 class="fw-bold mb-1">Ingresos</h6>
-            <p class="text-muted small mb-0">Registra el ingreso de productos al inventario.</p>
+            <p class="text-muted small mb-0 d-none d-md-block">Registra el ingreso de productos.</p>
           </div>
         </div>
         }
         @if (tieneAcceso('Sesiones')) {
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="module-card rounded-4 shadow-sm p-4 h-100" role="button" (click)="irA('/sesiones')" aria-label="Ir a Sesiones">
-            <div class="module-icon-wrap bg-purple mb-3">
+        <div class="col-6 col-md-6 col-lg-4">
+          <div class="module-card rounded-4 shadow-sm p-3 p-md-4 h-100" role="button" (click)="irA('/sesiones')" aria-label="Ir a Sesiones">
+            <div class="module-icon-wrap bg-purple mb-2 mb-md-3">
               <i class="bi bi-clock-history"></i>
             </div>
             <h6 class="fw-bold mb-1">Sesiones</h6>
-            <p class="text-muted small mb-0">Consulta el historial de entradas y salidas del personal.</p>
+            <p class="text-muted small mb-0 d-none d-md-block">Historial de entradas y salidas.</p>
           </div>
         </div>
         }

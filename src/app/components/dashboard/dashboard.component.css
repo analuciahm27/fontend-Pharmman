@@ -210,3 +210,52 @@
   box-shadow: 0 0 0 3px rgba(77,147,127,0.4);
   transition: box-shadow 0.2s ease;
 }
+
+/* ===== RESPONSIVO ===== */
+
+/* Botón hamburguesa */
+.btn-hamburger {
+  background: none;
+  border: none;
+  color: #374e62;
+  font-size: 1.5rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  line-height: 1;
+  transition: background 0.2s ease;
+}
+.btn-hamburger:hover { background: #f0f9f9; }
+
+/* Overlay para cerrar sidebar en móvil */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  animation: fadeIn 0.2s ease both;
+}
+
+@media (max-width: 991px) {
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    width: 260px !important;
+  }
+
+  .sidebar.sidebar-open {
+    left: 0;
+  }
+
+  .content-area {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-card h2 { font-size: 1.2rem !important; }
+  .module-icon-wrap { width: 38px; height: 38px; font-size: 1.1rem; }
+}
