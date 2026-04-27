@@ -12,9 +12,10 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
 
-  usuario = this.auth.getUsuario();
-  esAdmin = this.auth.getRol() === 'ADMIN';
   fecha = new Date();
+
+  get usuario() { return this.auth.getUsuario(); }
+  get esAdmin() { return this.auth.getRol() === 'ADMIN'; }
 
   saludo(): string {
     const hora = this.fecha.getHours();
