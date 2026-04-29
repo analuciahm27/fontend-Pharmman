@@ -1,5 +1,5 @@
 /* ===== LAYOUT ===== */
-.app-layout { min-height: 100vh; background: #f4f6f9; }
+.app-layout { min-height: 100vh; background: #f4f6f9; transform: none; }
 
 /* ===== SIDEBAR ===== */
 .sidebar {
@@ -145,7 +145,7 @@
 }
 
 .sidebar {
-  animation: slideInLeft 0.4s ease both;
+  animation: fadeIn 0.4s ease both;
 }
 
 .topbar {
