@@ -26,6 +26,7 @@ export class IngresoComponent implements OnInit {
   // Historial (solo ADMIN)
   esAdmin = false;
   puedeEscribir = false;
+  puedeVerHistorial = false;
   sinPermiso = false;
   historial: any[] = [];
   mostrarHistorial = false;
@@ -40,11 +41,12 @@ export class IngresoComponent implements OnInit {
   ngOnInit(): void {
     this.esAdmin = this.authService.getRol() === 'ADMIN';
     this.puedeEscribir = this.esAdmin || this.authService.tienePermiso('Ingresos_escritura');
+    this.puedeVerHistorial = this.esAdmin || this.authService.tienePermiso('Ingresos_lectura');
     if (!this.authService.tienePermiso('Ingresos_lectura') && !this.esAdmin) {
       this.sinPermiso = true;
       return;
     }
-    if (this.esAdmin) this.cargarHistorial();
+    if (this.puedeVerHistorial) this.cargarHistorial();
   }
 
   buscarProducto(): void {
