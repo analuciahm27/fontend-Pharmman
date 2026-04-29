@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/service/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,15 +14,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   form: FormGroup;
   errorMsg: string = '';
+  infoMsg: string = '';
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -30,19 +32,32 @@ export class LoginComponent {
     });
   }
 
- onSubmit(): void {
-  if (this.form.invalid) return;
-
-  const { email, password } = this.form.value;
-
-  this.auth.login(email, password).subscribe({
-    next: (resp) => {
-      if (resp.mustChangePassword) return; // AuthService ya redirige a /update-password
-      this.router.navigate(['/dashboard']);
-    },
-    error: () => {
-      this.errorMsg = 'Credenciales incorrectas o usuario inactivo.';
+  ngOnInit(): void {
+    const reason = this.route.snapshot.queryParamMap.get('reason');
+    if (reason === 'inactivity') {
+      this.infoMsg = 'Tu sesión se cerró por inactividad.';
+    } else if (reason === 'logout') {
+      this.infoMsg = 'Sesión cerrada correctamente.';
     }
-  });
-}
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) return;
+    this.infoMsg = '';
+    const { email, password } = this.form.value;
+
+    this.auth.login(email, password).subscribe({
+      next: (resp) => {
+        if (resp.mustChangePassword) return;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        if (err.error?.error === 'usuario_inactivo') {
+          this.errorMsg = 'Tu cuenta está desactivada. Contacta al administrador.';
+        } else {
+          this.errorMsg = 'Email o contraseña incorrectos.';
+        }
+      }
+    });
+  }
 }
