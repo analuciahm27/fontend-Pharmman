@@ -158,26 +158,75 @@
   <!-- HISTORIAL -->
   @if (mostrarHistorial && puedeVerHistorial) {
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-    <div class="row g-3 align-items-end">
-      <div class="col-md-3">
+    <div class="d-flex gap-3 align-items-end flex-wrap">
+      <!-- Fechas -->
+      <div>
         <label class="form-label small fw-bold text-muted">DESDE</label>
-        <input type="date" class="form-control" [(ngModel)]="filtroDesde">
+        <input type="date" class="form-control" [(ngModel)]="filtroDesde" (change)="onFechaChange()">
       </div>
-      <div class="col-md-3">
+      <div>
         <label class="form-label small fw-bold text-muted">HASTA</label>
-        <input type="date" class="form-control" [(ngModel)]="filtroHasta">
+        <input type="date" class="form-control" [(ngModel)]="filtroHasta" (change)="onFechaChange()">
       </div>
-      <div class="col-md-3">
-        <button class="btn btn-jungle rounded-pill px-4 w-100" (click)="filtrarPorFecha()">
-          <i class="bi bi-funnel me-2"></i> Filtrar
+
+      <!-- Filtro método de pago -->
+      <div class="position-relative ms-auto">
+        <button class="btn rounded-pill px-3 d-flex align-items-center gap-2"
+                [class.btn-jungle]="filtroMetodoPago !== null"
+                [class.btn-outline-jungle]="filtroMetodoPago === null"
+                (click)="mostrarFiltrosPago = !mostrarFiltrosPago">
+          <i class="bi bi-funnel-fill"></i>
+          <span>Filtros</span>
+          @if (filtroMetodoPago !== null) {
+            <span class="badge bg-white text-success rounded-pill" style="font-size:0.7rem">1</span>
+          }
+          <i class="bi" [class.bi-chevron-down]="!mostrarFiltrosPago" [class.bi-chevron-up]="mostrarFiltrosPago"></i>
         </button>
+
+        @if (mostrarFiltrosPago) {
+          <div class="filtro-dropdown shadow rounded-4" (click)="$event.stopPropagation()">
+            <p class="text-muted small fw-bold px-3 pt-3 mb-2">MÉTODO DE PAGO</p>
+            <ul class="list-unstyled mb-0">
+              <li class="filtro-item" [class.filtro-activo]="filtroMetodoPago === null"
+                  (click)="seleccionarMetodoPago(null)">
+                <i class="bi" [class.bi-check-circle-fill]="filtroMetodoPago === null"
+                              [class.bi-circle]="filtroMetodoPago !== null"></i>
+                <span>Todos</span>
+                <span class="filtro-count">{{ historial.length }}</span>
+              </li>
+              @for (metodo of ['Efectivo','Tarjeta','Transferencia']; track metodo) {
+                <li class="filtro-item" [class.filtro-activo]="filtroMetodoPago === metodo"
+                    (click)="seleccionarMetodoPago(metodo)">
+                  <i class="bi" [class.bi-check-circle-fill]="filtroMetodoPago === metodo"
+                                [class.bi-circle]="filtroMetodoPago !== metodo"></i>
+                  <span>{{ metodo }}</span>
+                  <span class="filtro-count">{{ contarPorMetodo(metodo) }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+          <div class="filtro-overlay" (click)="mostrarFiltrosPago = false"></div>
+        }
       </div>
-      <div class="col-md-3">
-        <button class="btn btn-outline-secondary rounded-pill px-4 w-100" (click)="limpiarFiltros()">
-          <i class="bi bi-x-circle me-2"></i> Limpiar
+
+      <!-- Limpiar -->
+      @if (filtroDesde || filtroHasta || filtroMetodoPago) {
+        <button class="btn btn-outline-secondary rounded-pill px-3" (click)="limpiarFiltros()">
+          <i class="bi bi-x-circle me-1"></i> Limpiar
         </button>
-      </div>
+      }
     </div>
+
+    <!-- Chips de filtros activos -->
+    @if (filtroMetodoPago !== null) {
+      <div class="d-flex align-items-center gap-2 mt-3">
+        <small class="text-muted">Método:</small>
+        <span class="badge-method d-flex align-items-center gap-1">
+          {{ filtroMetodoPago }}
+          <i class="bi bi-x ms-1" role="button" (click)="seleccionarMetodoPago(null)" style="cursor:pointer"></i>
+        </span>
+      </div>
+    }
   </div>
 
   <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
@@ -194,7 +243,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (v of historial; track v.id) {
+          @for (v of historialFiltrado; track v.id) {
           <tr class="border-bottom-mist">
             <td class="ps-4 text-muted small">VTA-{{ v.id }}</td>
             <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -208,7 +257,13 @@
             </td>
           </tr>
           } @empty {
-          <tr><td colspan="6" class="text-center py-5 text-muted">No hay ventas registradas.</td></tr>
+          <tr><td colspan="6" class="text-center py-5 text-muted">
+            @if (filtroMetodoPago || filtroDesde) {
+              No hay ventas con los filtros aplicados.
+            } @else {
+              No hay ventas registradas.
+            }
+          </td></tr>
           }
         </tbody>
       </table>
