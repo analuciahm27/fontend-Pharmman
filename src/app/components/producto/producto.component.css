@@ -44,15 +44,36 @@
 }
 
 .modal-backdrop-custom {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(55, 78, 98, 0.4); backdrop-filter: blur(6px); z-index: 1040;
+  position: fixed;
+  inset: 0;
+  background: rgba(55, 78, 98, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 9040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .modal-custom {
-  position: fixed; top: 50%; left: 50%;
-  transform: translate(-50%, -50%); z-index: 1050; width: 100%;
-  animation: slideUp 0.3s ease-out;
-  will-change: transform;
+  position: fixed;
+  inset: 0;
+  z-index: 9050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
+
+.modal-custom > * {
+  pointer-events: all;
+  animation: scaleInModal 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes scaleInModal {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 @keyframes slideUp {
   from { opacity: 0; transform: translate(-50%, -45%); }
   to { opacity: 1; transform: translate(-50%, -50%); }
