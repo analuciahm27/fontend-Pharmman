@@ -40,8 +40,12 @@ export class LoginComponent {
       if (resp.mustChangePassword) return; // AuthService ya redirige a /update-password
       this.router.navigate(['/dashboard']);
     },
-    error: () => {
-      this.errorMsg = 'Credenciales incorrectas o usuario inactivo.';
+    error: (err) => {
+      if (err.error?.error === 'usuario_inactivo') {
+        this.errorMsg = 'Tu cuenta está desactivada. Contacta al administrador.';
+      } else {
+        this.errorMsg = 'Email o contraseña incorrectos.';
+      }
     }
   });
 }
