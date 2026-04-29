@@ -87,7 +87,7 @@ verificarSesion(): Observable<any> {
   }
 
   private logoutByInactivity(): void {
-    this.http.post(`${this.url}/auth/logout`, {}).subscribe({
+    this.http.post(`${this.url}/auth/logout`, {}, { withCredentials: true }).subscribe({
       next: () => {
         this.clearInactivityTimer();
         this.usuarioSubject.next(null);
