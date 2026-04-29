@@ -134,20 +134,41 @@ export class ProductoComponent implements OnInit {
     });
   }
 
+  errorCategoria = '';
+
   // Categorías
   abrirModalCategoria(cat?: any): void {
     this.categoriaEditandoId = cat ? cat.id : null;
     this.formCategoria = { nombre: cat ? cat.nombre : '' };
+    this.errorCategoria = '';
     this.mostrarModalCategoria = true;
   }
 
-  cerrarModalCategoria(): void { this.mostrarModalCategoria = false; }
+  cerrarModalCategoria(): void {
+    this.mostrarModalCategoria = false;
+    this.errorCategoria = '';
+  }
 
   guardarCategoria(): void {
+    if (!this.formCategoria.nombre.trim()) {
+      this.errorCategoria = 'El nombre de la categoría es obligatorio';
+      return;
+    }
+    const nombreExiste = this.categorias.some(c =>
+      c.nombre.toLowerCase() === this.formCategoria.nombre.trim().toLowerCase() &&
+      c.id !== this.categoriaEditandoId
+    );
+    if (nombreExiste) {
+      this.errorCategoria = 'Ya existe una categoría con ese nombre';
+      return;
+    }
     const obs = this.categoriaEditandoId
       ? this.categoriaService.editar(this.categoriaEditandoId, this.formCategoria)
       : this.categoriaService.crear(this.formCategoria);
-    obs.subscribe({ next: () => { this.cargarCategorias(); this.cerrarModalCategoria(); }, error: (err) => console.error(err) });
+    obs.subscribe({
+      next: () => { this.cargarCategorias(); this.cerrarModalCategoria(); },
+      error: (err) => this.errorCategoria = mensajeError(err)
+    });
   }
 
   irA(ruta: string): void { this.router.navigate([ruta]); }
