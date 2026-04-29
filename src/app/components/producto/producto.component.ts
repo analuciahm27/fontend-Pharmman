@@ -113,12 +113,12 @@ export class ProductoComponent implements OnInit {
 
     if (this.modoEdicion) {
       if (!confirm(`¿Guardar los cambios del producto "${this.form.nombre}"?`)) return;
-      this.productoService.editar(this.productoSeleccionado.id, this.form).subscribe({
+      this.productoService.editar(this.productoSeleccionado.id, { ...this.form, codigo: this.form.codigo.toUpperCase() }).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },
         error: (err) => this.errorMsg = mensajeError(err)
       });
     } else {
-      this.productoService.crear(this.form).subscribe({
+      this.productoService.crear({ ...this.form, codigo: this.form.codigo.toUpperCase() }).subscribe({
         next: () => { this.cargarProductos(); this.cerrarModal(); },
         error: (err) => this.errorMsg = mensajeError(err)
       });
