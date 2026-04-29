@@ -27,10 +27,13 @@ export class ProductoComponent implements OnInit {
   esAdmin = false;
   puedeEscribir = false;
   sinPermiso = false;
+  mostrarFiltros = false;
+  categoriaFiltro: number | null = null;
 
   form = { codigo: '', nombre: '', descripcion: '', precio: 0, categoriaId: null as number | null };
-  formCategoria = { nombre: '' };
+  formCategoria = { nombre: '', prefijo: '' };
   categoriaEditandoId: number | null = null;
+  cargandoCodigo = false;
 
   constructor(
     private productoService: ProductoService,
@@ -72,12 +75,71 @@ export class ProductoComponent implements OnInit {
     });
   }
 
+  get productosFiltrados(): any[] {
+    if (this.categoriaFiltro === null) return this.productos;
+    return this.productos.filter(p => p.categoriaId === this.categoriaFiltro);
+  }
+
+  contarPorCategoria(categoriaId: number): number {
+    return this.productos.filter(p => p.categoriaId === categoriaId).length;
+  }
+
+  seleccionarFiltro(categoriaId: number | null): void {
+    this.categoriaFiltro = categoriaId;
+    this.mostrarFiltros = false;
+  }
+
+  toggleFiltros(): void {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  cerrarFiltros(): void {
+    this.mostrarFiltros = false;
+  }
+
+  nombreCategoria(id: number | null): string {
+    if (id === null) return '';
+    return this.categorias.find(c => c.id === id)?.nombre ?? '';
+  }
+
   abrirModalCrear(): void {
     this.modoEdicion = false;
     this.productoSeleccionado = null;
     this.form = { codigo: '', nombre: '', descripcion: '', precio: 0, categoriaId: null };
     this.errorMsg = '';
+    this.cargandoCodigo = false;
     this.mostrarModal = true;
+
+    console.log('Categorias disponibles:', this.categorias);
+
+    // Si hay categorías cargadas, preseleccionar la primera y generar código
+    if (this.categorias.length > 0) {
+      this.form.categoriaId = this.categorias[0].id;
+      console.log('CategoriaId asignado:', this.form.categoriaId);
+      this.onCategoriaChange();
+    } else {
+      console.warn('No hay categorías cargadas todavía');
+    }
+  }
+
+  onCategoriaChange(): void {
+    if (!this.modoEdicion && this.form.categoriaId) {
+      this.cargandoCodigo = true;
+      this.form.codigo = '';
+      this.productoService.siguienteCodigo(this.form.categoriaId).subscribe({
+        next: (resp) => {
+          console.log('Código generado:', resp);
+          this.form.codigo = resp.codigo;
+          this.cargandoCodigo = false;
+        },
+        error: (err) => {
+          console.error('Error al generar código:', err);
+          this.cargandoCodigo = false;
+        }
+      });
+    } else if (!this.modoEdicion) {
+      this.form.codigo = '';
+    }
   }
 
   abrirModalEditar(p: any): void {
@@ -139,7 +201,7 @@ export class ProductoComponent implements OnInit {
   // Categorías
   abrirModalCategoria(cat?: any): void {
     this.categoriaEditandoId = cat ? cat.id : null;
-    this.formCategoria = { nombre: cat ? cat.nombre : '' };
+    this.formCategoria = { nombre: cat ? cat.nombre : '', prefijo: cat ? (cat.prefijo || '') : '' };
     this.errorCategoria = '';
     this.mostrarModalCategoria = true;
   }

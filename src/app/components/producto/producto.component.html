@@ -32,13 +32,62 @@
     }
   </div>
 
-  <!-- Buscador -->
+  <!-- Buscador + Filtros -->
   <div class="card border-0 shadow-sm rounded-4 mb-4 p-3">
-    <div class="input-group-pharman">
-      <i class="bi bi-search"></i>
-      <input type="text" class="form-control-mist" [(ngModel)]="busqueda"
-             (input)="buscar()" placeholder="Buscar por nombre o código...">
+    <div class="d-flex gap-2 align-items-center">
+      <div class="input-group-pharman flex-grow-1">
+        <i class="bi bi-search"></i>
+        <input type="text" class="form-control-mist" [(ngModel)]="busqueda"
+               (input)="buscar()" placeholder="Buscar por nombre o código...">
+      </div>
+      <div class="position-relative">
+        <button class="btn rounded-pill px-3 d-flex align-items-center gap-2"
+                [class.btn-jungle]="categoriaFiltro !== null"
+                [class.btn-outline-jungle]="categoriaFiltro === null"
+                (click)="toggleFiltros()">
+          <i class="bi bi-funnel-fill"></i>
+          <span>Filtros</span>
+          @if (categoriaFiltro !== null) {
+            <span class="badge bg-white text-success rounded-pill" style="font-size:0.7rem">1</span>
+          }
+          <i class="bi" [class.bi-chevron-down]="!mostrarFiltros" [class.bi-chevron-up]="mostrarFiltros"></i>
+        </button>
+
+        @if (mostrarFiltros) {
+          <div class="filtro-dropdown shadow rounded-4" (click)="$event.stopPropagation()">
+            <p class="text-muted small fw-bold px-3 pt-3 mb-2">CATEGORÍA</p>
+            <ul class="list-unstyled mb-0">
+              <li class="filtro-item" [class.filtro-activo]="categoriaFiltro === null"
+                  (click)="seleccionarFiltro(null)">
+                <i class="bi" [class.bi-check-circle-fill]="categoriaFiltro === null"
+                              [class.bi-circle]="categoriaFiltro !== null"></i>
+                <span>Todas</span>
+                <span class="filtro-count">{{ productos.length }}</span>
+              </li>
+              @for (cat of categorias; track cat.id) {
+                <li class="filtro-item" [class.filtro-activo]="categoriaFiltro === cat.id"
+                    (click)="seleccionarFiltro(cat.id)">
+                  <i class="bi" [class.bi-check-circle-fill]="categoriaFiltro === cat.id"
+                                [class.bi-circle]="categoriaFiltro !== cat.id"></i>
+                  <span>{{ cat.nombre }}</span>
+                  <span class="filtro-count">{{ contarPorCategoria(cat.id) }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+          <div class="filtro-overlay" (click)="cerrarFiltros()"></div>
+        }
+      </div>
     </div>
+    @if (categoriaFiltro !== null) {
+      <div class="d-flex align-items-center gap-2 mt-2 ps-1">
+        <small class="text-muted">Filtrando por:</small>
+        <span class="badge-category d-flex align-items-center gap-1">
+          {{ nombreCategoria(categoriaFiltro) }}
+          <i class="bi bi-x" role="button" (click)="seleccionarFiltro(null)" style="cursor:pointer"></i>
+        </span>
+      </div>
+    }
   </div>
 
   <!-- Tabla -->
@@ -57,7 +106,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (p of productos; track p.id) {
+          @for (p of productosFiltrados; track p.id) {
           <tr class="border-bottom-mist">
             <td class="ps-4 text-muted small font-mono">{{ p.codigo }}</td>
             <td>
@@ -91,7 +140,13 @@
             }
           </tr>
           } @empty {
-          <tr><td colspan="7" class="text-center py-5 text-muted">No hay productos registrados.</td></tr>
+          <tr><td colspan="7" class="text-center py-5 text-muted">
+            @if (categoriaFiltro !== null) {
+              No hay productos en esta categoría.
+            } @else {
+              No hay productos registrados.
+            }
+          </td></tr>
           }
         </tbody>
       </table>
@@ -112,12 +167,30 @@
     <div class="row g-3">
       <div class="col-6">
         <label class="form-label small fw-bold text-muted">CÓDIGO</label>
-        <input type="text" class="form-control" [(ngModel)]="form.codigo" placeholder="Ej: MED-001" style="text-transform:uppercase">
+        <div class="input-group">
+          <input type="text" class="form-control"
+                 [(ngModel)]="form.codigo"
+                 [readonly]="!modoEdicion"
+                 [placeholder]="cargandoCodigo ? 'Generando...' : (form.categoriaId ? '' : 'Selecciona categoría')"
+                 style="text-transform:uppercase; background-color: var(--bs-secondary-bg, #f8f9fa);">
+          @if (cargandoCodigo) {
+            <span class="input-group-text bg-white border-start-0">
+              <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+            </span>
+          }
+          @if (!cargandoCodigo && form.codigo && !modoEdicion) {
+            <span class="input-group-text bg-white border-start-0 text-success">
+              <i class="bi bi-check-circle-fill"></i>
+            </span>
+          }
+        </div>
+        @if (!modoEdicion) {
+          <small class="text-muted">Se genera automáticamente al elegir categoría</small>
+        }
       </div>
       <div class="col-6">
         <label class="form-label small fw-bold text-muted">CATEGORÍA</label>
-        <select class="form-select" [(ngModel)]="form.categoriaId">
-          <option [ngValue]="null" disabled>Seleccionar</option>
+        <select class="form-select" [(ngModel)]="form.categoriaId" (change)="onCategoriaChange()">
           @for (cat of categorias; track cat.id) {
             <option [ngValue]="cat.id">{{ cat.nombre }}</option>
           }
@@ -161,6 +234,12 @@
     <div class="mb-3">
       <label class="form-label small fw-bold text-muted">NOMBRE</label>
       <input type="text" class="form-control" [(ngModel)]="formCategoria.nombre" placeholder="Ej: Vitaminas">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-bold text-muted">PREFIJO DE CÓDIGO</label>
+      <input type="text" class="form-control" [(ngModel)]="formCategoria.prefijo"
+             placeholder="Ej: VIT" maxlength="5" style="text-transform:uppercase">
+      <small class="text-muted">Se usará para generar códigos automáticos (ej: VIT-001)</small>
     </div>
     @if (errorCategoria) {
       <small class="text-danger d-block mb-3">

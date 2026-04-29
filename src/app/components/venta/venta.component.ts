@@ -35,6 +35,8 @@ export class VentasComponent implements OnInit {
   ventaDetalle: any = null;
   filtroDesde = '';
   filtroHasta = '';
+  filtroMetodoPago: string | null = null;
+  mostrarFiltrosPago = false;
 
   constructor(
     private ventaService: VentaService,
@@ -127,6 +129,14 @@ export class VentasComponent implements OnInit {
     });
   }
 
+  onFechaChange(): void {
+    if (this.filtroDesde && this.filtroHasta) {
+      this.filtrarPorFecha();
+    } else if (!this.filtroDesde && !this.filtroHasta) {
+      this.cargarHistorial();
+    }
+  }
+
   filtrarPorFecha(): void {
     if (!this.filtroDesde || !this.filtroHasta) return;
     const desde = `${this.filtroDesde}T00:00:00`;
@@ -137,9 +147,24 @@ export class VentasComponent implements OnInit {
     });
   }
 
+  get historialFiltrado(): any[] {
+    if (!this.filtroMetodoPago) return this.historial;
+    return this.historial.filter(v => v.metodoPago === this.filtroMetodoPago);
+  }
+
+  contarPorMetodo(metodo: string): number {
+    return this.historial.filter(v => v.metodoPago === metodo).length;
+  }
+
+  seleccionarMetodoPago(metodo: string | null): void {
+    this.filtroMetodoPago = metodo;
+    this.mostrarFiltrosPago = false;
+  }
+
   limpiarFiltros(): void {
     this.filtroDesde = '';
     this.filtroHasta = '';
+    this.filtroMetodoPago = null;
     this.cargarHistorial();
   }
 

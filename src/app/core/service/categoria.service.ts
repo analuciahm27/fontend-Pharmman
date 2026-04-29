@@ -13,11 +13,11 @@ export class CategoriaService {
     return this.http.get<any[]>(this.url);
   }
 
-  crear(data: { nombre: string }): Observable<any> {
+  crear(data: { nombre: string; prefijo?: string }): Observable<any> {
     return this.http.post<any>(this.url, data);
   }
 
-  editar(id: number, data: { nombre: string }): Observable<any> {
+  editar(id: number, data: { nombre: string; prefijo?: string }): Observable<any> {
     return this.http.put<any>(`${this.url}/${id}`, data);
   }
 }

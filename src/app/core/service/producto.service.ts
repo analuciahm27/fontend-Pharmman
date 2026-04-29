@@ -29,4 +29,8 @@ export class ProductoService {
   cambiarEstado(id: number): Observable<Producto> {
     return this.http.patch<Producto>(`${this.url}/${id}/estado`, {});
   }
+
+  siguienteCodigo(categoriaId: number): Observable<{codigo: string}> {
+    return this.http.get<{codigo: string}>(`${this.url}/siguiente-codigo`, { params: { categoriaId } });
+  }
 }
