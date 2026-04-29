@@ -94,11 +94,12 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Centrado perfecto */
+  transform: translate(-50%, -50%);
   z-index: 1050;
   width: 100%;
-  max-width: 500px; /* Ajuste para el formulario de usuario */
+  max-width: 500px;
   animation: slideUp 0.3s ease-out;
+  will-change: transform;
 }
 
 .modal-custom .form-control, 
