@@ -39,6 +39,9 @@ export class LoginComponent implements OnInit {
     } else if (reason === 'logout') {
       this.infoMsg = 'Sesión cerrada correctamente.';
     }
+    if (this.infoMsg) {
+      setTimeout(() => this.infoMsg = '', 5000);
+    }
   }
 
   onSubmit(): void {
