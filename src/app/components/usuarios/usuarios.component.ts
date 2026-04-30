@@ -30,12 +30,12 @@ export class UsuariosComponent implements OnInit {
     nombre: string;
     apellidoPaterno: string;
     apellidoMaterno: string;
-    email: string;
+    emailLocal: string;
     dni: string;
     rolId: number | null;
   } = {
     nombre: '', apellidoPaterno: '', apellidoMaterno: '',
-    email: '', dni: '', rolId: null
+    emailLocal: '', dni: '', rolId: null
   };
 
   // --- ROLES ---
@@ -80,7 +80,7 @@ export class UsuariosComponent implements OnInit {
   abrirModalCrear(): void {
     this.modoEdicion = false;
     this.errorForm = '';
-    this.form = { nombre: '', apellidoPaterno: '', apellidoMaterno: '', email: '', dni: '', rolId: null };
+    this.form = { nombre: '', apellidoPaterno: '', apellidoMaterno: '', emailLocal: '', dni: '', rolId: null };
     this.mostrarModalUsuario = true;
   }
 
@@ -89,11 +89,13 @@ export class UsuariosComponent implements OnInit {
     this.errorForm = '';
     this.usuarioSeleccionado = user;
     const rolEncontrado = this.listaRoles.find(r => r.nombre === user.rol);
+    // extraer solo la parte local del email (antes del @)
+    const emailLocal = user.email ? user.email.replace('@pharmman.com', '') : '';
     this.form = {
       nombre: user.nombre,
       apellidoPaterno: user.apellidoPaterno,
       apellidoMaterno: user.apellidoMaterno || '',
-      email: user.email,
+      emailLocal,
       dni: user.dni || '',
       rolId: rolEncontrado ? rolEncontrado.id : null
     };
@@ -129,8 +131,14 @@ export class UsuariosComponent implements OnInit {
       this.errorForm = 'El apellido materno no puede contener caracteres especiales y debe tener mínimo 3 caracteres';
       return;
     }
-    if (!this.form.email.trim()) {
+    if (!this.form.emailLocal.trim()) {
       this.errorForm = 'El email es obligatorio';
+      return;
+    }
+    // validar que la parte local no tenga espacios ni caracteres inválidos
+    const emailLocalRegex = /^[a-zA-Z0-9._%+-]+$/;
+    if (!emailLocalRegex.test(this.form.emailLocal.trim())) {
+      this.errorForm = 'El email solo puede contener letras, números, puntos o guiones antes del @pharmman.com';
       return;
     }
     if (!this.form.rolId) {
@@ -150,23 +158,18 @@ export class UsuariosComponent implements OnInit {
       }
     }
 
-    // Validación email
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(this.form.email)) {
-      this.errorForm = 'El email no tiene un formato válido';
-      return;
-    }
-
+    // Eliminar validación de email anterior (ya no aplica)
     this.errorForm = '';
+    const emailCompleto = `${this.form.emailLocal.trim()}@pharmman.com`;
 
     if (this.modoEdicion) {
       if (!confirm(`¿Guardar los cambios del usuario ${this.form.nombre} ${this.form.apellidoPaterno}?`)) return;
-      this.usuarioService.editar(this.usuarioSeleccionado.id, this.form).subscribe({
+      this.usuarioService.editar(this.usuarioSeleccionado.id, { ...this.form, email: emailCompleto }).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
         error: (err) => this.errorForm = mensajeError(err)
       });
     } else {
-      this.usuarioService.crear(this.form).subscribe({
+      this.usuarioService.crear({ ...this.form, email: emailCompleto }).subscribe({
         next: () => { this.cargarUsuarios(); this.cerrarModalUsuario(); },
         error: (err) => this.errorForm = mensajeError(err)
       });
