@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './core/service/auth.service';
+import { environment } from '../enviroments/enviroment';
 
 @Component({
   selector: 'app-root',
@@ -22,5 +23,14 @@ export class AppComponent implements OnInit {
         console.log('No hay sesión de usuario activa.');
       }
     });
+  }
+
+  // Al cerrar la pestaña o el navegador, registrar la salida
+  // sendBeacon garantiza que la petición se envíe aunque la página se esté cerrando
+  @HostListener('window:beforeunload')
+  onBeforeUnload(): void {
+    if (this.authService.isLoggedIn()) {
+      navigator.sendBeacon(`${environment.apiUrl}/auth/logout`);
+    }
   }
 }

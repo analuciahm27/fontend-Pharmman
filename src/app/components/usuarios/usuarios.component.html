@@ -152,7 +152,11 @@
       </div>
       <div class="col-6">
         <label class="form-label small fw-bold text-muted">EMAIL INSTITUCIONAL *</label>
-        <input type="email" class="form-control" [(ngModel)]="form.email" placeholder="correo@pharmman.com">
+        <div class="input-group">
+          <input type="text" class="form-control" [(ngModel)]="form.emailLocal"
+                 placeholder="nombre.apellido" style="border-radius: 12px 0 0 12px !important;">
+          <span class="input-group-text fw-bold text-muted" style="background:#f0f9f9; border-color:#e0eeee; border-radius: 0 12px 12px 0 !important; font-size:0.85rem">&#64;pharmman.com</span>
+        </div>
       </div>
       @if (!modoEdicion) {
       <div class="col-12">
