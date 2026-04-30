@@ -11,8 +11,8 @@ export class AuthService {
   private usuarioSubject = new BehaviorSubject<any>(null);
   public usuario$ = this.usuarioSubject.asObservable();
 
-  // Control de inactividad (30 minutos = 1800000 ms)
-  private readonly INACTIVITY_TIMEOUT = 30 * 60 * 1000;
+  // Control de inactividad (8 horas = 28800000 ms)
+  private readonly INACTIVITY_TIMEOUT = 8 * 60 * 60 * 1000;
   private inactivityTimer: any = null;
   private inactivityInitialized = false;
 
