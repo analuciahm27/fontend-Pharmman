@@ -106,13 +106,27 @@ export class UsuariosComponent implements OnInit {
   }
 
   guardar(): void {
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{3,}$/;
+
     // Validaciones
     if (!this.form.nombre.trim()) {
       this.errorForm = 'El nombre es obligatorio';
       return;
     }
+    if (!soloLetras.test(this.form.nombre.trim())) {
+      this.errorForm = 'El nombre debe tener mínimo 3 caracteres y no puede contener caracteres especiales';
+      return;
+    }
     if (!this.form.apellidoPaterno.trim()) {
       this.errorForm = 'El apellido paterno es obligatorio';
+      return;
+    }
+    if (!soloLetras.test(this.form.apellidoPaterno.trim())) {
+      this.errorForm = 'El apellido paterno debe tener mínimo 3 caracteres y no puede contener caracteres especiales';
+      return;
+    }
+    if (this.form.apellidoMaterno.trim() && !soloLetras.test(this.form.apellidoMaterno.trim())) {
+      this.errorForm = 'El apellido materno no puede contener caracteres especiales y debe tener mínimo 3 caracteres';
       return;
     }
     if (!this.form.email.trim()) {
