@@ -30,8 +30,7 @@ export class ProductoComponent implements OnInit {
   mostrarFiltros = false;
   categoriaFiltro: number | null = null;
 
-  form = { codigo: '', nombre: '', descripcion: '', precio: 0, categoriaId: null as number | null };
-  formCategoria = { nombre: '', prefijo: '' };
+  form = { codigo: '', nombre: '', descripcion: '', precio: 0, categoriaId: null as number | null };  formCategoria = { nombre: '', prefijo: '' };
   categoriaEditandoId: number | null = null;
   cargandoCodigo = false;
 
@@ -153,6 +152,9 @@ export class ProductoComponent implements OnInit {
   cerrarModal(): void { this.mostrarModal = false; }
 
   guardar(): void {
+    const soloLetrasNumeros = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+    const descripcionRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,;:\-()\u00f1\u00d1]+$/;
+
     // Validaciones
     if (!this.form.codigo.trim()) {
       this.errorMsg = 'El código es obligatorio';
@@ -162,8 +164,24 @@ export class ProductoComponent implements OnInit {
       this.errorMsg = 'El nombre es obligatorio';
       return;
     }
-    if (this.form.precio <= 0) {
+    if (!soloLetrasNumeros.test(this.form.nombre.trim())) {
+      this.errorMsg = 'El nombre no puede contener caracteres especiales';
+      return;
+    }
+    if (!this.form.descripcion || !this.form.descripcion.trim()) {
+      this.errorMsg = 'La descripción es obligatoria';
+      return;
+    }
+    if (!descripcionRegex.test(this.form.descripcion.trim())) {
+      this.errorMsg = 'La descripción no puede contener caracteres especiales';
+      return;
+    }
+    if (this.form.precio === null || this.form.precio === undefined || this.form.precio <= 0) {
       this.errorMsg = 'El precio debe ser mayor a 0';
+      return;
+    }
+    if (!Number.isFinite(this.form.precio)) {
+      this.errorMsg = 'El precio debe ser un número válido';
       return;
     }
     if (!this.form.categoriaId) {
