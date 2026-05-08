@@ -164,12 +164,20 @@ export class ProductoComponent implements OnInit {
       this.errorMsg = 'El nombre es obligatorio';
       return;
     }
+    if (this.form.nombre.trim().length < 3) {
+      this.errorMsg = 'El nombre debe tener mínimo 3 caracteres';
+      return;
+    }
     if (!soloLetrasNumeros.test(this.form.nombre.trim())) {
       this.errorMsg = 'El nombre no puede contener caracteres especiales';
       return;
     }
     if (!this.form.descripcion || !this.form.descripcion.trim()) {
       this.errorMsg = 'La descripción es obligatoria';
+      return;
+    }
+    if (this.form.descripcion.trim().length < 3) {
+      this.errorMsg = 'La descripción debe tener mínimo 3 caracteres';
       return;
     }
     if (!descripcionRegex.test(this.form.descripcion.trim())) {
