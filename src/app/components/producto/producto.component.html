@@ -238,7 +238,8 @@
     <div class="mb-3">
       <label class="form-label small fw-bold text-muted">PREFIJO DE CÓDIGO</label>
       <input type="text" class="form-control" [(ngModel)]="formCategoria.prefijo"
-             placeholder="Ej: VIT" maxlength="5" style="text-transform:uppercase">
+             placeholder="Ej: VIT" maxlength="3" style="text-transform:uppercase"
+             (input)="formCategoria.prefijo = formCategoria.prefijo.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g, '')">
       <small class="text-muted">Se usará para generar códigos automáticos (ej: VIT-001)</small>
     </div>
     @if (errorCategoria) {

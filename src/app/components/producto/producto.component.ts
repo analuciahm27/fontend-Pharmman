@@ -238,8 +238,31 @@ export class ProductoComponent implements OnInit {
   }
 
   guardarCategoria(): void {
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+    const soloLetrasPrefijo = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/;
+
     if (!this.formCategoria.nombre.trim()) {
       this.errorCategoria = 'El nombre de la categoría es obligatorio';
+      return;
+    }
+    if (this.formCategoria.nombre.trim().length < 3) {
+      this.errorCategoria = 'El nombre debe tener mínimo 3 caracteres';
+      return;
+    }
+    if (!soloLetras.test(this.formCategoria.nombre.trim())) {
+      this.errorCategoria = 'El nombre no puede contener caracteres especiales ni números';
+      return;
+    }
+    if (!this.formCategoria.prefijo || !this.formCategoria.prefijo.trim()) {
+      this.errorCategoria = 'El prefijo es obligatorio';
+      return;
+    }
+    if (this.formCategoria.prefijo.trim().length !== 3) {
+      this.errorCategoria = 'El prefijo debe tener exactamente 3 letras';
+      return;
+    }
+    if (!soloLetrasPrefijo.test(this.formCategoria.prefijo.trim())) {
+      this.errorCategoria = 'El prefijo solo puede contener letras, sin números ni caracteres especiales';
       return;
     }
     const nombreExiste = this.categorias.some(c =>
@@ -248,6 +271,14 @@ export class ProductoComponent implements OnInit {
     );
     if (nombreExiste) {
       this.errorCategoria = 'Ya existe una categoría con ese nombre';
+      return;
+    }
+    const prefijoExiste = this.categorias.some(c =>
+      c.prefijo?.toLowerCase() === this.formCategoria.prefijo.trim().toLowerCase() &&
+      c.id !== this.categoriaEditandoId
+    );
+    if (prefijoExiste) {
+      this.errorCategoria = 'Ya existe una categoría con ese prefijo';
       return;
     }
     const obs = this.categoriaEditandoId
