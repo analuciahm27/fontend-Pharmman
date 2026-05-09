@@ -290,5 +290,12 @@ export class ProductoComponent implements OnInit {
     });
   }
 
+  filtrarPrefijo(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const soloLetras = /[^a-zA-Z]/g;
+    input.value = input.value.replace(soloLetras, '');
+    this.formCategoria.prefijo = input.value;
+  }
+
   irA(ruta: string): void { this.router.navigate([ruta]); }
 }
