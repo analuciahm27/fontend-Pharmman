@@ -17,7 +17,7 @@ export class CategoriaService {
     return this.http.post<any>(this.url, data);
   }
 
-  editar(id: number, data: { nombre: string; prefijo?: string }): Observable<any> {
-    return this.http.put<any>(`${this.url}/${id}`, data);
+  editar(id: number, data: { nombre: string; prefijo?: string }, actualizarCodigos = false): Observable<any> {
+    return this.http.put<any>(`${this.url}/${id}?actualizarCodigos=${actualizarCodigos}`, data);
   }
 }

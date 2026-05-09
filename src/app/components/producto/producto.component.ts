@@ -282,7 +282,23 @@ export class ProductoComponent implements OnInit {
       return;
     }
     const obs = this.categoriaEditandoId
-      ? this.categoriaService.editar(this.categoriaEditandoId, this.formCategoria)
+      ? (() => {
+          // Detectar si el prefijo cambió para preguntar si actualizar códigos
+          const categoriaActual = this.categorias.find(c => c.id === this.categoriaEditandoId);
+          const prefijoAnterior = categoriaActual?.prefijo?.toUpperCase();
+          const prefijoNuevo = this.formCategoria.prefijo.trim().toUpperCase();
+          let actualizarCodigos = false;
+
+          if (prefijoAnterior && prefijoAnterior !== prefijoNuevo) {
+            actualizarCodigos = confirm(
+              `El prefijo cambió de "${prefijoAnterior}" a "${prefijoNuevo}".\n\n` +
+              `¿Deseas actualizar también los códigos de los productos de esta categoría?\n` +
+              `(Ejemplo: ${prefijoAnterior}-001 → ${prefijoNuevo}-001)`
+            );
+          }
+
+          return this.categoriaService.editar(this.categoriaEditandoId!, this.formCategoria, actualizarCodigos);
+        })()
       : this.categoriaService.crear(this.formCategoria);
     obs.subscribe({
       next: () => { this.cargarCategorias(); this.cerrarModalCategoria(); },
