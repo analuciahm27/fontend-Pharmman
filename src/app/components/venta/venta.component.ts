@@ -80,13 +80,20 @@ export class VentasComponent implements OnInit {
   }
 
   cambiarCantidad(item: any, cantidad: number): void {
-    if (!cantidad || cantidad < 1) {
+    const val = Math.floor(Number(cantidad));
+    if (!val || isNaN(val) || val < 1) {
       item.cantidad = 1;
+      this.errorVenta = '';
       this.calcularTotal();
       return;
     }
-    if (cantidad > item.stock) { this.errorVenta = `Stock máximo: ${item.stock}`; item.cantidad = item.stock; this.calcularTotal(); return; }
-    item.cantidad = cantidad;
+    if (val > item.stock) {
+      item.cantidad = item.stock;
+      this.errorVenta = `Stock máximo: ${item.stock}`;
+      this.calcularTotal();
+      return;
+    }
+    item.cantidad = val;
     this.errorVenta = '';
     this.calcularTotal();
   }
@@ -104,6 +111,8 @@ export class VentasComponent implements OnInit {
   finalizarVenta(): void {
     if (!this.metodoPago) { this.errorVenta = 'Selecciona un método de pago'; return; }
     if (this.carrito.length === 0) { this.errorVenta = 'El carrito está vacío'; return; }
+    const itemInvalido = this.carrito.find(i => !i.cantidad || i.cantidad < 1 || i.cantidad > i.stock);
+    if (itemInvalido) { this.errorVenta = `Cantidad inválida en "${itemInvalido.nombre}"`; return; }
     if (!confirm(`¿Confirmar venta por S/ ${this.totalVenta.toFixed(2)} con método de pago ${this.metodoPago}?`)) return;
 
     const request = {
