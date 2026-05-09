@@ -290,6 +290,7 @@ export class ProductoComponent implements OnInit {
           let actualizarCodigos = false;
 
           if (prefijoAnterior && prefijoAnterior !== prefijoNuevo) {
+            console.log('Prefijo anterior:', prefijoAnterior, '→ Nuevo:', prefijoNuevo);
             actualizarCodigos = confirm(
               `El prefijo cambió de "${prefijoAnterior}" a "${prefijoNuevo}".\n\n` +
               `¿Deseas actualizar también los códigos de los productos de esta categoría?\n` +

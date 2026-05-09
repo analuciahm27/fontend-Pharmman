@@ -80,8 +80,12 @@ export class VentasComponent implements OnInit {
   }
 
   cambiarCantidad(item: any, cantidad: number): void {
-    if (cantidad < 1) return;
-    if (cantidad > item.stock) { this.errorVenta = `Stock máximo: ${item.stock}`; return; }
+    if (!cantidad || cantidad < 1) {
+      item.cantidad = 1;
+      this.calcularTotal();
+      return;
+    }
+    if (cantidad > item.stock) { this.errorVenta = `Stock máximo: ${item.stock}`; item.cantidad = item.stock; this.calcularTotal(); return; }
     item.cantidad = cantidad;
     this.errorVenta = '';
     this.calcularTotal();
