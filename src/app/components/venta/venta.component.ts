@@ -79,21 +79,24 @@ export class VentasComponent implements OnInit {
     this.productosFiltrados = [];
   }
 
-  cambiarCantidad(item: any, cantidad: number): void {
+  cambiarCantidad(item: any, cantidad: number, input?: HTMLInputElement): void {
     const val = Math.floor(Number(cantidad));
     if (!val || isNaN(val) || val < 1) {
       item.cantidad = 1;
+      if (input) input.value = '1';
       this.errorVenta = '';
       this.calcularTotal();
       return;
     }
     if (val > item.stock) {
       item.cantidad = item.stock;
+      if (input) input.value = String(item.stock);
       this.errorVenta = `Stock máximo: ${item.stock}`;
       this.calcularTotal();
       return;
     }
     item.cantidad = val;
+    if (input) input.value = String(val);
     this.errorVenta = '';
     this.calcularTotal();
   }

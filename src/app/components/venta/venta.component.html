@@ -98,9 +98,10 @@
               <td>S/ {{ item.precio.toFixed(2) }}</td>
               <td>
                 <input type="number" class="form-control form-control-sm text-center"
+                       #cantidadInput
                        [ngModel]="item.cantidad"
-                       (ngModelChange)="cambiarCantidad(item, $event)"
-                       (blur)="cambiarCantidad(item, item.cantidad)"
+                       (ngModelChange)="cambiarCantidad(item, $event, cantidadInput)"
+                       (blur)="cambiarCantidad(item, item.cantidad, cantidadInput)"
                        min="1" [max]="item.stock"
                        [class.border-danger]="item.cantidad > item.stock">
               </td>
