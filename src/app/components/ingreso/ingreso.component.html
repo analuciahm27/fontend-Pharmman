@@ -84,7 +84,11 @@
               <td><span class="stock-ok">{{ item.producto.stock }}</span></td>
               <td>
                 <input type="number" class="form-control form-control-sm text-center"
-                       [(ngModel)]="item.cantidad" min="1">
+                       #cantidadIngresoInput
+                       [ngModel]="item.cantidad"
+                       (ngModelChange)="cambiarCantidadIngreso(item, $event, cantidadIngresoInput)"
+                       (blur)="cambiarCantidadIngreso(item, item.cantidad, cantidadIngresoInput)"
+                       min="1">
               </td>
               <td>
                 <button class="btn btn-sm text-danger" (click)="eliminarItem(i)" aria-label="Eliminar producto del ingreso">

@@ -71,6 +71,17 @@ export class IngresoComponent implements OnInit {
     this.items.splice(index, 1);
   }
 
+  cambiarCantidadIngreso(item: { producto: any; cantidad: number }, cantidad: number, input?: HTMLInputElement): void {
+    const val = Math.floor(Number(cantidad));
+    if (!val || isNaN(val) || val < 1) {
+      item.cantidad = 1;
+      if (input) input.value = '1';
+      return;
+    }
+    item.cantidad = val;
+    if (input) input.value = String(val);
+  }
+
   confirmarIngreso(): void {
     if (this.items.length === 0) { this.errorMsg = 'Agrega al menos un producto'; return; }
     if (!confirm(`¿Confirmar el ingreso de ${this.items.length} producto(s) al inventario?`)) return;
