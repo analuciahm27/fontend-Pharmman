@@ -108,37 +108,53 @@ export class UsuariosComponent implements OnInit {
   }
 
   guardar(): void {
-    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{3,}$/;
+    const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{3,100}$/;
 
     // Validaciones
     if (!this.form.nombre.trim()) {
       this.errorForm = 'El nombre es obligatorio';
       return;
     }
+    if (this.form.nombre.trim().length > 100) {
+      this.errorForm = 'El nombre no puede superar los 100 caracteres';
+      return;
+    }
     if (!soloLetras.test(this.form.nombre.trim())) {
-      this.errorForm = 'El nombre debe tener mínimo 3 caracteres y no puede contener caracteres especiales';
+      this.errorForm = 'El nombre debe tener mínimo 3 caracteres y solo puede contener letras y espacios';
       return;
     }
     if (!this.form.apellidoPaterno.trim()) {
       this.errorForm = 'El apellido paterno es obligatorio';
       return;
     }
+    if (this.form.apellidoPaterno.trim().length > 100) {
+      this.errorForm = 'El apellido paterno no puede superar los 100 caracteres';
+      return;
+    }
     if (!soloLetras.test(this.form.apellidoPaterno.trim())) {
-      this.errorForm = 'El apellido paterno debe tener mínimo 3 caracteres y no puede contener caracteres especiales';
+      this.errorForm = 'El apellido paterno debe tener mínimo 3 caracteres y solo puede contener letras y espacios';
       return;
     }
     if (this.form.apellidoMaterno.trim() && !soloLetras.test(this.form.apellidoMaterno.trim())) {
-      this.errorForm = 'El apellido materno no puede contener caracteres especiales y debe tener mínimo 3 caracteres';
+      this.errorForm = 'El apellido materno solo puede contener letras y espacios, mínimo 3 caracteres';
+      return;
+    }
+    if (this.form.apellidoMaterno.trim().length > 100) {
+      this.errorForm = 'El apellido materno no puede superar los 100 caracteres';
       return;
     }
     if (!this.form.emailLocal.trim()) {
       this.errorForm = 'El email es obligatorio';
       return;
     }
+    if (this.form.emailLocal.trim().length > 140) {
+      this.errorForm = 'El email no puede superar los 150 caracteres';
+      return;
+    }
     // validar que la parte local no tenga espacios ni caracteres inválidos
     const emailLocalRegex = /^[a-zA-Z0-9._%+-]+$/;
     if (!emailLocalRegex.test(this.form.emailLocal.trim())) {
-      this.errorForm = 'El email solo puede contener letras, números, puntos o guiones antes del @pharmman.com';
+      this.errorForm = 'El email solo puede contener letras, números, puntos o guiones antes del &#64;pharmman.com';
       return;
     }
     if (!this.form.rolId) {
