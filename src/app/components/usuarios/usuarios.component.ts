@@ -135,15 +135,18 @@ export class UsuariosComponent implements OnInit {
       this.errorForm = 'El apellido paterno debe tener mínimo 3 caracteres y solo puede contener letras y espacios';
       return;
     }
-    if (this.form.apellidoMaterno.trim() && !soloLetras.test(this.form.apellidoMaterno.trim())) {
+    if (!this.form.apellidoMaterno.trim()) {
+      this.errorForm = 'El apellido materno es obligatorio';
+      return;
+    }
+    if (!soloLetras.test(this.form.apellidoMaterno.trim())) {
       this.errorForm = 'El apellido materno solo puede contener letras y espacios, mínimo 3 caracteres';
       return;
     }
     if (this.form.apellidoMaterno.trim().length > 100) {
       this.errorForm = 'El apellido materno no puede superar los 100 caracteres';
       return;
-    }
-    if (!this.form.emailLocal.trim()) {
+    }    if (!this.form.emailLocal.trim()) {
       this.errorForm = 'El email es obligatorio';
       return;
     }
